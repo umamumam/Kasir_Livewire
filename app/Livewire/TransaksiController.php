@@ -9,19 +9,18 @@ use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiController extends Component
 {
     use WithPagination;
 
-    // Properti untuk filter, sorting dan pencarian
     public $search = '';
     public $sortField = 'tanggaltransaksi';
     public $sortDirection = 'desc';
     public $startDate;
     public $endDate;
 
-    // Properti untuk modal
     public $showDetailModal = false;
     public $selectedTransaksi;
 
@@ -40,32 +39,52 @@ class TransaksiController extends Component
         $this->sortField = $field;
     }
 
-    // Fungsi untuk menghapus transaksi
+    public function printNota($transaksiId)
+    {
+        try {
+            $transaksi = Transaksi::with(['detailTransaksis.produk'])->find($transaksiId);
+
+            if ($transaksi) {
+                $safeKode = str_replace(['/', '\\'], '-', $transaksi->kode);
+                $pdf = Pdf::loadView('livewire.transaksi.nota', compact('transaksi'));
+                return response()->streamDownload(function() use ($pdf) {
+                    echo $pdf->stream();
+                }, 'nota-' . $safeKode . '.pdf');
+            } else {
+                $this->dispatch('swal:error', [
+                    'title' => 'Gagal!',
+                    'text' => 'Transaksi tidak ditemukan.',
+                    'icon' => 'error'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', [
+                'title' => 'Gagal!',
+                'text' => 'Gagal mencetak nota. Pastikan DomPDF sudah terinstal. Detail: ' . $e->getMessage(),
+                'icon' => 'error'
+            ]);
+        }
+    }
+
     public function delete($id)
     {
-        // Gunakan transaction untuk memastikan operasi atomic
         DB::beginTransaction();
 
         try {
             $transaksi = Transaksi::with('detailTransaksis.produk')->find($id);
 
             if ($transaksi) {
-                // Iterasi setiap item dalam transaksi
                 foreach ($transaksi->detailTransaksis as $detail) {
                     $produk = $detail->produk;
 
-                    // Cek apakah produknya ada
                     if ($produk) {
-                        // Tambahkan kembali stok produk
                         $produk->stok += $detail->jumlah;
                         $produk->save();
                     }
 
-                    // Hapus detail transaksi
                     $detail->delete();
                 }
 
-                // Hapus transaksi setelah semua detail dan stok dikembalikan
                 $transaksi->delete();
 
                 DB::commit();
@@ -123,6 +142,6 @@ class TransaksiController extends Component
             ->paginate(10);
 
         return view('livewire.transaksi.transaksi-controller', compact('transaksis'))
-            ->layout('layouts.app');
+            ->layout('layouts.transaksi');
     }
 }
