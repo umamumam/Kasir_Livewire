@@ -39,33 +39,6 @@ class TransaksiController extends Component
         $this->sortField = $field;
     }
 
-    public function printNota($transaksiId)
-    {
-        try {
-            $transaksi = Transaksi::with(['detailTransaksis.produk'])->find($transaksiId);
-
-            if ($transaksi) {
-                $safeKode = str_replace(['/', '\\'], '-', $transaksi->kode);
-                $pdf = Pdf::loadView('livewire.transaksi.nota', compact('transaksi'));
-                return response()->streamDownload(function() use ($pdf) {
-                    echo $pdf->stream();
-                }, 'nota-' . $safeKode . '.pdf');
-            } else {
-                $this->dispatch('swal:error', [
-                    'title' => 'Gagal!',
-                    'text' => 'Transaksi tidak ditemukan.',
-                    'icon' => 'error'
-                ]);
-            }
-        } catch (\Exception $e) {
-            $this->dispatch('swal:error', [
-                'title' => 'Gagal!',
-                'text' => 'Gagal mencetak nota. Pastikan DomPDF sudah terinstal. Detail: ' . $e->getMessage(),
-                'icon' => 'error'
-            ]);
-        }
-    }
-
     public function delete($id)
     {
         DB::beginTransaction();

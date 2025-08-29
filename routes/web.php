@@ -7,6 +7,7 @@ use App\Livewire\ProdukController;
 use App\Livewire\KategoriController;
 use App\Livewire\TransaksiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotaController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -31,4 +32,5 @@ Route::get('/produk', ProdukController::class);
 Route::get('/transaksi', TransaksiController::class)->name('transaksi.index');
 Route::get('/transaksi/create', CreateTransaksi::class)->name('transaksi.create');
 Route::get('/transaksi/{transaksi}/edit', EditTransaksi::class)->name('transaksi.edit');
+Route::get('/nota/{transaksiId}', [NotaController::class, 'cetakNota'])->name('transaksi.nota');
 require __DIR__.'/auth.php';
