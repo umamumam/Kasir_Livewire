@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $fillable = [
-        'kode', 'total', 'bayar', 'kembalian', 'tanggaltransaksi'
+        'kode',
+        'total',
+        'bayar',
+        'kembalian',
+        'tanggaltransaksi'
+    ];
+
+    protected $casts = [
+        'tanggaltransaksi' => 'datetime',
     ];
 
     public function detailTransaksis()

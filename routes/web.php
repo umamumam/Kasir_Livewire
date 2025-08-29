@@ -1,8 +1,11 @@
 <?php
 
 use App\Livewire\Counter;
+use App\Livewire\EditTransaksi;
+use App\Livewire\CreateTransaksi;
 use App\Livewire\ProdukController;
 use App\Livewire\KategoriController;
+use App\Livewire\TransaksiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
@@ -25,4 +28,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/counter', Counter::class);
 Route::get('/kategori', KategoriController::class);
 Route::get('/produk', ProdukController::class);
+Route::get('/transaksi', TransaksiController::class)->name('transaksi.index');
+Route::get('/transaksi/create', CreateTransaksi::class)->name('transaksi.create');
+Route::get('/transaksi/{transaksi}/edit', EditTransaksi::class)->name('transaksi.edit');
 require __DIR__.'/auth.php';

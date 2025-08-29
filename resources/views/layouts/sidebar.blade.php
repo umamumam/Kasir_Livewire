@@ -25,6 +25,14 @@
                         <span class="hide-menu">Dashboard</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="/transaksi" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-shopping-cart-plus"></i>
+                        </span>
+                        <span class="hide-menu">Transaksi</span>
+                    </a>
+                </li>
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Master Data</span>
@@ -45,7 +53,7 @@
                         <span class="hide-menu">Produk</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
+                {{-- <li class="sidebar-item">
                     <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
                         <span>
                             <i class="ti ti-cards"></i>
@@ -108,7 +116,7 @@
                         </span>
                         <span class="hide-menu">Sample Page</span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
             {{-- <div class="unlimited-access hide-menu bg-light-primary position-relative mb-7 mt-5 rounded">
                 <div class="d-flex">
