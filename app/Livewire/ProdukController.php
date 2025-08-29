@@ -18,12 +18,15 @@ class ProdukController extends Component
     public $kode;
     public $harga_beli;
     public $harga_jual;
+    public $harga_jual_terendah;
+    public $harga_jual_tertinggi;
     public $stok;
     public $kategori_id;
 
     // Properti untuk status mode
     public $isEditing = false;
     public $isCreating = false;
+    public $isLowStockMode = false; // Properti baru untuk mode stok rendah
 
     // Properti untuk modal
     public $showModal = false;
@@ -71,6 +74,20 @@ class ProdukController extends Component
         }
 
         $this->sortField = $field;
+    }
+
+    // Metode baru untuk menampilkan produk dengan stok rendah
+    public function showLowStock()
+    {
+        $this->isLowStockMode = true;
+        $this->resetPage(); // Reset halaman untuk query baru
+    }
+
+    // Metode untuk kembali ke tampilan semua produk
+    public function showAllProducts()
+    {
+        $this->isLowStockMode = false;
+        $this->resetPage(); // Reset halaman untuk query baru
     }
 
     // Buka modal untuk membuat produk baru
@@ -151,12 +168,20 @@ class ProdukController extends Component
     // Render tampilan
     public function render()
     {
-        $produks = Produk::with('kategori')
-            ->where('nama', 'like', '%' . $this->search . '%')
-            ->orWhere('kode', 'like', '%' . $this->search . '%')
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(10);
+        $query = Produk::with('kategori');
 
+        // Tambahkan filter stok jika mode stok rendah aktif
+        if ($this->isLowStockMode) {
+            $query->where('stok', '<=', 20);
+        } else {
+            // Logika pencarian hanya jika tidak dalam mode stok rendah
+            if ($this->search) {
+                $query->where('nama', 'like', '%' . $this->search . '%')
+                    ->orWhere('kode', 'like', '%' . $this->search . '%');
+            }
+        }
+
+        $produks = $query->orderBy($this->sortField, $this->sortDirection)->paginate(10);
         $kategoris = Kategori::all();
 
         return view('livewire.produk', compact('produks', 'kategoris'))->layout('layouts.app');

@@ -36,7 +36,7 @@
                     <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">Bayar</th>
                     <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">Kembalian
                     </th>
-                    <th class="px-5 py-3 border-b text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                    <th class="px-4 py-3 border-b text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,14 +45,14 @@
                     <td class="px-5 py-4 border-b text-sm text-gray-700">{{ $transaksis->firstItem() + $index }}</td>
                     <td class="px-5 py-4 border-b text-sm text-gray-700">{{ $transaksi->kode }}</td>
                     <td class="px-5 py-4 border-b text-sm text-gray-700">{{
-                        \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d F Y') }}</td>
+                        \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d M Y') }}</td>
                     <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->total, 0, ',',
                         '.') }}</td>
                     <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->bayar, 0, ',',
                         '.') }}</td>
                     <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->kembalian, 0,
                         ',', '.') }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-center">
+                    <td class="px-4 py-4 border-b text-sm text-center">
                         <div class="flex justify-center gap-2">
                             <button wire:click="showDetail({{ $transaksi->id }})"
                                 class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-1 text-sm shadow-sm transition">

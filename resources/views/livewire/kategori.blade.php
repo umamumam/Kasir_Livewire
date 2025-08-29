@@ -31,7 +31,8 @@
             </thead>
             <tbody>
                 @forelse ($kategoris as $index => $kategori)
-                <tr class="hover:bg-gray-50 transition">
+                <tr wire:key="{{ $kategori->id }}" class="hover:bg-gray-50 transition">
+                {{-- <tr class="hover:bg-gray-50 transition"> --}}
                     <td class="px-5 py-4 border-b text-sm text-gray-700">
                         {{ $kategoris->firstItem() + $index }}
                     </td>

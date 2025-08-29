@@ -84,7 +84,7 @@
     <div class="separator"></div>
     <table class="details">
         <tr>
-            <td>Kode Nota</td>
+            <td>No Transaksi</td>
             <td>: {{ $transaksi->kode }}</td>
         </tr>
         <tr>
@@ -119,15 +119,15 @@
     <table class="summary">
         <tr>
             <td>Total</td>
-            <td>: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
+            <th style="text-align:right;">: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</th>
         </tr>
         <tr>
             <td>Bayar</td>
-            <td>: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</td>
+            <th style="text-align:right;">: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</th>
         </tr>
         <tr>
             <td>Kembalian</td>
-            <td>: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</td>
+            <th style="text-align:right;">: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</th>
         </tr>
     </table>
     <div class="separator"></div>

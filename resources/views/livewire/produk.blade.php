@@ -2,6 +2,21 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-6">📦 Manajemen Produk</h1>
 
     <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">
+        {{-- Tombol untuk beralih tampilan --}}
+        <div class="flex gap-2">
+            <button wire:click="showAllProducts"
+                class="px-4 py-2 rounded-lg shadow-md transition
+                {{ !$isLowStockMode ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300' }}">
+                Semua Produk
+            </button>
+            <button wire:click="showLowStock"
+                class="px-4 py-2 rounded-lg shadow-md transition
+                {{ $isLowStockMode ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300' }}">
+                Stok Rendah
+            </button>
+        </div>
+
+        @if(!$isLowStockMode)
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="🔍 Cari produk..."
             class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-1/3 text-sm">
 
@@ -16,6 +31,7 @@
             </svg>
             <span>Tambah Produk</span>
         </button>
+        @endif
     </div>
 
     {{-- Tabel Daftar Produk --}}
@@ -65,7 +81,7 @@
             </thead>
             <tbody>
                 @forelse ($produks as $index => $produk)
-                <tr class="hover:bg-gray-50 transition">
+                <tr wire:key="{{ $produk->id }}" class="hover:bg-gray-50 transition">
                     <td class="px-5 py-4 border-b text-sm text-gray-700">
                         {{ $produks->firstItem() + $index }}
                     </td>
