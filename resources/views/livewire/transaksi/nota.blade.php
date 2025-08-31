@@ -77,8 +77,8 @@
 
 <body>
     <div class="header">
-        <h3>Agen Sosis Lancar Manunggal</h3>
-        <p>Jl. Tayu-Jepara depan Kantor Pos Ngablak</p>
+        <h3>Agen Sosis <br> Lancar Manunggal</h3>
+        <p>Jl. Raya Tayu-Jepara Km 7 <br> depan Kantor Pos Ngablak</p>
         <p>HP: 085201454015</p>
     </div>
     <div class="separator"></div>

@@ -14,13 +14,36 @@
             </li>
         </ul>
         <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end gap-3">
+
+                <li class="nav-item d-none d-md-flex align-items-center me-3">
+                    <div id="jam-tanggal" style="font-size: 14px; font-weight: bold;"></div>
+
+                    <script>
+                        function updateJamTanggal() {
+                            const now = new Date();
+                            let jam = now.getHours().toString().padStart(2, '0');
+                            let menit = now.getMinutes().toString().padStart(2, '0');
+                            let detik = now.getSeconds().toString().padStart(2, '0');
+                            let tanggal = now.toLocaleDateString('id-ID', {
+                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                            });
+                            document.getElementById('jam-tanggal').innerText = `${tanggal} | ${jam}:${menit}:${detik}`;
+                        }
+
+                        setInterval(updateJamTanggal, 1000);
+                        updateJamTanggal();
+                    </script>
+                </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <a class="nav-link d-flex align-items-center bg-light-subtle p-2 rounded-2" href="javascript:void(0)" id="drop2"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{{ asset('modernize/src/assets/images/profile/user-1.jpg') }}" alt="User Profile"
-                            width="35" height="35" class="rounded-circle">
+                            width="35" height="35" class="rounded-circle me-2">
+                        <span class="text-gray-800 small d-none d-sm-inline">
+                            Hai, {{ Auth::user()->name }}
+                        </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                         <div class="message-body">
@@ -42,7 +65,6 @@
                                     Logout
                                 </button>
                             </form>
-
                         </div>
                     </div>
                 </li>

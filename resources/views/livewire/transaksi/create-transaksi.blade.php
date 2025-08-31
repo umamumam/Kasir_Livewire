@@ -15,7 +15,7 @@
                 <ul
                     class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-2 shadow-xl max-h-60 overflow-y-auto">
                     @forelse($searchResults as $produk)
-                    <li wire:click="addProdukToCart({{ $produk->id }})"
+                    <li wire:key="search-{{ $produk->id }}" wire:click="addProdukToCart({{ $produk->id }})"
                         class="p-4 cursor-pointer hover:bg-gray-100 transition duration-150 ease-in-out border-b border-gray-200 last:border-b-0">
                         <p class="font-medium text-gray-900">{{ $produk->nama }} <span class="text-xs text-gray-500">({{
                                 $produk->kode }})</span></p>
@@ -56,7 +56,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($cartItems as $index => $item)
-                            <tr>
+                            <tr wire:key="cart-{{ $item['produk_id'] }}">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
                                     $item['nama_produk'] }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {{
