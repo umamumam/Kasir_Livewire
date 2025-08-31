@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
                         <div class="mb-3 mb-sm-0">
-                            <h5 class="card-title fw-semibold">Transaksi Penjualan</h5>
+                            <h5 class="card-title fw-semibold">🛍️ Transaksi Penjualan</h5>
                         </div>
                         <div>
                             <select class="form-select">
@@ -27,7 +27,7 @@
                 <div class="col-lg-12">
                     <div class="card overflow-hidden">
                         <div class="card-body p-4">
-                            <h5 class="card-title mb-9 fw-semibold">Pendapatan Harian</h5>
+                            <h5 class="card-title mb-9 fw-semibold">💸 Pendapatan Harian</h5>
                             <div class="row align-items-center">
                                 <div class="col-8">
                                     <h4 class="card-title fw-semibold mb-3">RP {{ number_format($totalHarian, 0, ',',
@@ -77,7 +77,8 @@
                             <div class="row align-items-start">
                                 <div class="col-8">
                                     <h5 class="card-title mb-9 fw-semibold">Pendapatan Bulanan</h5>
-                                    <h4 class="card-title fw-semibold mb-3">Rp {{ number_format($totalBulanan, 0, ',', '.') }}</h4>
+                                    <h4 class="card-title fw-semibold mb-3">Rp {{ number_format($totalBulanan, 0, ',',
+                                        '.') }}</h4>
                                     <div class="d-flex align-items-center pb-1">
                                         <span class="me-2 rounded-circle
                                             {{ $persentaseBulanan >= 0 ? 'bg-light-success' : 'bg-light-danger' }}
@@ -114,181 +115,106 @@
             <div class="card w-100">
                 <div class="card-body p-4">
                     <div class="mb-4">
-                        <h5 class="card-title fw-semibold">Recent Transactions</h5>
+                        <h5 class="card-title fw-semibold">🏆 Top Produk</h5>
                     </div>
                     <ul class="timeline-widget mb-0 position-relative mb-n5">
+                        @foreach($topProducts as $product)
                         <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">09:30</div>
+                            <div class="timeline-time text-dark flex-shrink-0 text-end">
+                                {{ $product->total_terjual }}x
+                            </div>
                             <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
+                                <span class="timeline-badge border-2 border
+                                @if($product->is_new) border-info
+                                @elseif($product->is_hot) border-danger
+                                @else border-success
+                                @endif
+                                flex-shrink-0 my-8">
+                                </span>
                                 <span class="timeline-badge-border d-block flex-shrink-0"></span>
                             </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1">Payment received from John Doe
-                                of $385.90</div>
-                        </li>
-                        <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">10:00 am</div>
-                            <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-info flex-shrink-0 my-8"></span>
-                                <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                            </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                                    href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
-                            </div>
-                        </li>
-                        <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                            <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                                <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                            </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1">Payment was made of $64.95 to
-                                Michael</div>
-                        </li>
-                        <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                            <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-warning flex-shrink-0 my-8"></span>
-                                <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                            </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                                    href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
+                            <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">
+                                {{ $product->nama_produk }}
+                                @if($product->is_new)
+                                <span class="badge bg-info ms-2">🆕 New</span>
+                                @endif
+                                @if($product->is_hot)
+                                <span class="badge bg-danger ms-2">🔥 Hot</span>
+                                @endif
+                                <div class="text-muted fw-normal fs-2">
+                                    Terjual {{ $product->total_terjual }} unit
+                                </div>
                             </div>
                         </li>
-                        <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                            <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-danger flex-shrink-0 my-8"></span>
-                                <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                            </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New arrival recorded
-                            </div>
-                        </li>
-                        <li class="timeline-item d-flex position-relative overflow-hidden">
-                            <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                            <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                                <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                            </div>
-                            <div class="timeline-desc fs-3 text-dark mt-n1">Payment Done</div>
-                        </li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
         </div>
+
         <div class="col-lg-8 d-flex align-items-stretch">
             <div class="card w-100">
                 <div class="card-body p-4">
-                    <h5 class="card-title fw-semibold mb-4">Recent Transactions</h5>
+                    <h5 class="card-title fw-semibold mb-4">🏆️ Top Produk Terlaris 🏆️</h5>
                     <div class="table-responsive">
-                        <table class="table text-nowrap mb-0 align-middle">
-                            <thead class="text-dark fs-4">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="bg-light">
                                 <tr>
-                                    <th class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">Id</h6>
+                                    <th class="text-center">
+                                        <h6 class="fw-semibold mb-0">NO</h6>
                                     </th>
-                                    <th class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">Assigned</h6>
+                                    <th>
+                                        <h6 class="fw-semibold mb-0">NAMA PRODUK</h6>
                                     </th>
-                                    <th class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">Name</h6>
-                                    </th>
-                                    <th class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">Priority</h6>
-                                    </th>
-                                    <th class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">Budget</h6>
+                                    <th class="text-center">
+                                        <h6 class="fw-semibold mb-0">JUMLAH TERJUAL</h6>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @forelse($topProducts as $index => $product)
                                 <tr>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">1</h6>
+                                    <!-- Ranking dengan badge -->
+                                    <td class="text-center">
+                                        @if($index == 0)
+                                        <span class="badge bg-warning text-dark fs-6">🥇 {{ $index+1 }}</span>
+                                        @elseif($index == 1)
+                                        <span class="badge bg-secondary fs-6">🥈 {{ $index+1 }}</span>
+                                        @elseif($index == 2)
+                                        <span class="badge bg-success fs-6">🥉 {{ $index+1 }}</span>
+                                        @else
+                                        <span class="badge bg-dark text-white">{{ $index+1 }}</span>
+                                        @endif
                                     </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-1">Sunil Joshi</h6>
-                                        <span class="fw-normal">Web Designer</span>
+
+                                    <!-- Nama Produk -->
+                                    <td>
+                                        <h6 class="fw-semibold mb-1">{{ $product->nama_produk }}</h6>
                                     </td>
-                                    <td class="border-bottom-0">
-                                        <p class="mb-0 fw-normal">Elite Admin</p>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-primary rounded-3 fw-semibold">Low</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0 fs-4">$3.9</h6>
+
+                                    <!-- Jumlah Terjual dengan badge -->
+                                    <td class="text-center">
+                                        <span class="badge bg-primary rounded-pill px-3 py-2">
+                                            {{ $product->total_terjual }}
+                                        </span>
                                     </td>
                                 </tr>
+                                @empty
                                 <tr>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">2</h6>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-1">Andrew McDownland</h6>
-                                        <span class="fw-normal">Project Manager</span>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <p class="mb-0 fw-normal">Real Homes WP Theme</p>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-secondary rounded-3 fw-semibold">Medium</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0 fs-4">$24.5k</h6>
+                                    <td colspan="3" class="text-center text-muted">
+                                        Tidak ada data produk terlaris.
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">3</h6>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-1">Christopher Jamil</h6>
-                                        <span class="fw-normal">Project Manager</span>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <p class="mb-0 fw-normal">MedicalPro WP Theme</p>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-danger rounded-3 fw-semibold">High</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0 fs-4">$12.8k</h6>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0">4</h6>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-1">Nirav Joshi</h6>
-                                        <span class="fw-normal">Frontend Engineer</span>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <p class="mb-0 fw-normal">Hosting Press HTML</p>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-success rounded-3 fw-semibold">Critical</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-bottom-0">
-                                        <h6 class="fw-semibold mb-0 fs-4">$2.4k</h6>
-                                    </td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-sm-6 col-xl-3">
             <div class="card overflow-hidden rounded-2">
                 <div class="position-relative">
@@ -417,11 +343,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="py-6 px-6 text-center">
-        <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
-                class="pe-1 text-primary text-decoration-underline">AdminMart.com</a> Distributed by <a
-                href="https://themewagon.com">ThemeWagon</a></p>
+        <p class="mb-0 fs-4">Design and Developed by <a href="https://github.com/umamumam" target="_blank"
+                class="pe-1 text-primary text-decoration-underline">mfthlmm</a> Sistem Kasir <a
+                href="https://github.com/umamumam" style="color: red">Lancar Manunggal</a></p>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

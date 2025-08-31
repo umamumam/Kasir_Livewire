@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaksi;
 use Carbon\Carbon;
+use App\Models\Transaksi;
+use App\Models\DetailTransaksi;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -60,6 +62,36 @@ class DashboardController extends Controller
             $persentaseBulan = (($bulanIni - $bulanKemarin) / $bulanKemarin) * 100;
         }
 
+        $topProducts = DetailTransaksi::select(
+            'produks.id',
+            'produks.nama as nama_produk',
+            'produks.created_at',
+            DB::raw('SUM(detail_transaksis.jumlah) as total_terjual')
+        )
+            ->join('produks', 'detail_transaksis.produk_id', '=', 'produks.id')
+            ->groupBy('produks.id', 'produks.nama', 'produks.created_at')
+            ->orderByDesc('total_terjual')
+            ->limit(5)
+            ->get()
+            ->map(function ($item) {
+                // 🆕 Produk baru < 30 hari
+                $item->is_new = Carbon::parse($item->created_at)->greaterThanOrEqualTo(now()->subDays(30));
+
+                // 🔥 Cek tren minggu ini vs minggu lalu
+                $salesThisWeek = DetailTransaksi::where('produk_id', $item->id)
+                    ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+                    ->sum('jumlah');
+
+                $salesLastWeek = DetailTransaksi::where('produk_id', $item->id)
+                    ->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])
+                    ->sum('jumlah');
+
+                $item->is_hot = $salesLastWeek > 0 && $salesThisWeek > ($salesLastWeek * 1.5);
+
+                return $item;
+            });
+
+
         return view('dashboard', [
             'chartData' => $totals,
             'categories' => $dates,
@@ -67,6 +99,7 @@ class DashboardController extends Controller
             'persentase' => round($persentase, 2),
             'totalBulanan' => $bulanIni,
             'persentaseBulanan' => round($persentaseBulan, 2),
+            'topProducts' => $topProducts,
         ]);
     }
 }

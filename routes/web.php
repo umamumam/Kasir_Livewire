@@ -36,4 +36,6 @@ Route::get('/transaksi', TransaksiController::class)->name('transaksi.index');
 Route::get('/transaksi/create', CreateTransaksi::class)->name('transaksi.create');
 Route::get('/transaksi/{transaksi}/edit', EditTransaksi::class)->name('transaksi.edit');
 Route::get('/nota/{transaksiId}', [NotaController::class, 'cetakNota'])->name('transaksi.nota');
+Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.transaksi');
+
 require __DIR__.'/auth.php';
