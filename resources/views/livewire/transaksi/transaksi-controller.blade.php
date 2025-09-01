@@ -2,9 +2,6 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-6">📝 Manajemen Transaksi</h1>
     {{-- Search & Tambah Transaksi --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">
-        <input wire:model.live.debounce.300ms="search" type="text" placeholder="🔍 Cari transaksi..."
-            class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-1/3 text-sm">
-
         <a href="{{ route('transaksi.create') }}"
             class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 flex items-center space-x-2 transition">
             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512">
@@ -13,19 +10,19 @@
             </svg>
             <span>Tambah Transaksi</span>
         </a>
-    </div>
-    <div class="flex items-center gap-4 mb-5">
+        <input wire:model.live.debounce.300ms="search" type="text" placeholder="🔍 Cari transaksi..."
+            class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-1/3 text-sm">
         <span class="text-sm font-semibold text-gray-700">Tampilkan:</span>
         <div class="flex gap-2">
             <button wire:click="$set('filterMode', 'daily')"
                 class="px-4 py-2 rounded-lg text-sm font-medium transition
                 @if($filterMode === 'daily') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
-                    Hari Ini
+                Hari Ini
             </button>
             <button wire:click="$set('filterMode', 'all')"
                 class="px-4 py-2 rounded-lg text-sm font-medium transition
                 @if($filterMode === 'all') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
-                        Semua
+                Semua
             </button>
         </div>
     </div>
