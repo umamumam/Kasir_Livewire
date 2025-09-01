@@ -1,3 +1,13 @@
+## Dashboard
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/cf387c4b-fd26-48a1-a391-1a5dbb773f59" />
+## Page
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/3189fe63-d8ca-4b4b-bbd1-e913f0e522ea" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/078ff687-a1bc-4058-8080-26a55142a4d6" />
+<img width="1919" height="810" alt="image" src="https://github.com/user-attachments/assets/86fbfe0a-5918-438c-9208-9c88db74a658" />
+
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
