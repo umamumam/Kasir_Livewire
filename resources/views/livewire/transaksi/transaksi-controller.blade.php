@@ -14,6 +14,21 @@
             <span>Tambah Transaksi</span>
         </a>
     </div>
+    <div class="flex items-center gap-4 mb-5">
+        <span class="text-sm font-semibold text-gray-700">Tampilkan:</span>
+        <div class="flex gap-2">
+            <button wire:click="$set('filterMode', 'daily')"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition
+                @if($filterMode === 'daily') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
+                    Hari Ini
+            </button>
+            <button wire:click="$set('filterMode', 'all')"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition
+                @if($filterMode === 'all') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
+                        Semua
+            </button>
+        </div>
+    </div>
 
     {{-- Tabel Daftar Transaksi --}}
     <div class="bg-white shadow-lg overflow-auto">

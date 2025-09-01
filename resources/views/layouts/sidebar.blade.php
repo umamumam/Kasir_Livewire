@@ -1,10 +1,10 @@
 <aside class="left-sidebar">
     <!-- Sidebar scroll-->
     <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="{{ url('/') }}" class="text-nowrap logo-img">
-                <img src="{{ asset('modernize/src/assets/images/logos/dark-logo.svg') }}" width="180"
-                    alt="Your Company Logo" />
+        <div class="brand-logo d-flex align-items-center justify-content-between py-1">
+            <a href="{{ url('/') }}" class="text-nowrap logo-img d-flex align-items-center gap-2">
+                <img src="{{ asset('dalam.png') }}" width="30" alt="Your Company Logo" />
+                <span class="fs-4 fw-bold">LANCAR MANUNGGAL</span>
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>

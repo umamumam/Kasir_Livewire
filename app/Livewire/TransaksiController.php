@@ -20,11 +20,17 @@ class TransaksiController extends Component
     public $sortDirection = 'desc';
     public $startDate;
     public $endDate;
+    public $filterMode = 'daily';
 
     public $showDetailModal = false;
     public $selectedTransaksi;
 
     public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterMode()
     {
         $this->resetPage();
     }
@@ -99,16 +105,25 @@ class TransaksiController extends Component
 
     public function render()
     {
-        $query = Transaksi::query()
-            ->where('kode', 'like', '%' . $this->search . '%')
-            ->orWhere('total', 'like', '%' . $this->search . '%')
-            ->orWhere('bayar', 'like', '%' . $this->search . '%');
+        $query = Transaksi::query();
 
-        if ($this->startDate) {
-            $query->whereDate('tanggaltransaksi', '>=', $this->startDate);
-        }
-        if ($this->endDate) {
-            $query->whereDate('tanggaltransaksi', '<=', $this->endDate);
+        // Logika filter berdasarkan mode
+        if ($this->filterMode === 'daily') {
+            $query->whereDate('tanggaltransaksi', Carbon::today());
+        } elseif ($this->filterMode === 'all') {
+            // Logika pencarian lama
+            $query->where(function ($q) {
+                $q->where('kode', 'like', '%' . $this->search . '%')
+                    ->orWhere('total', 'like', '%' . $this->search . '%')
+                    ->orWhere('bayar', 'like', '%' . $this->search . '%');
+            });
+
+            if ($this->startDate) {
+                $query->whereDate('tanggaltransaksi', '>=', $this->startDate);
+            }
+            if ($this->endDate) {
+                $query->whereDate('tanggaltransaksi', '<=', $this->endDate);
+            }
         }
 
         $transaksis = $query->orderBy($this->sortField, $this->sortDirection)
