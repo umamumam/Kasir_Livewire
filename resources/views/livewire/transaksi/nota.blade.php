@@ -12,9 +12,9 @@
         }
 
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.1;
             padding: 20px;
             width: 200px;
             /* Ukuran kertas nota */

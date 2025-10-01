@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewer Antrian Digital</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        /* Reset dan Pengaturan Dasar */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: #004c99;
+            /* Warna Biru Tua */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+        }
+
+        /* Area Tampilan Utama */
+        .display-area {
+            display: flex;
+            padding: 30px;
+        }
+
+        /* Antrian Saat Ini (Paling Menonjol) */
+        .current-queue {
+            flex: 2;
+            /* Mengambil 2/3 ruang */
+            text-align: center;
+            border-right: 2px solid #eee;
+            padding-right: 30px;
+        }
+
+        .current-queue h2 {
+            color: #004c99;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .queue-box {
+            background-color: #ff5722;
+            /* Warna Merah/Oranye Cerah */
+            color: #fff;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .number-lg {
+            font-size: 8em;
+            /* Ukuran Sangat Besar */
+            font-weight: 900;
+            display: block;
+        }
+
+        .loket-info p {
+            font-size: 1.5em;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .loket-label {
+            font-size: 3em;
+            /* Ukuran Besar */
+            font-weight: 800;
+            color: #004c99;
+            background-color: #e0f7fa;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        /* Antrian Selanjutnya */
+        .next-queue {
+            flex: 1;
+            /* Mengambil 1/3 ruang */
+            padding-left: 30px;
+        }
+
+        .next-queue h3 {
+            color: #004c99;
+            font-size: 1.5em;
+            border-bottom: 2px solid #004c99;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        #next-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #next-list li {
+            background-color: #f0f0f5;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .next-label {
+            color: #333;
+        }
+
+        /* Footer (Pesan Berjalan) */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-move 30s linear infinite;
+            /* Animasi bergerak */
+        }
+
+        @keyframes ticker-move {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(-100%, 0);
+            }
+        }
+
+        /* Kontrol Panel (Hanya untuk Simulasi/Testing) */
+        .control-panel {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #e9e9e9;
+            border-radius: 8px;
+            width: 95%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .control-panel input,
+        .control-panel button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .control-panel button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>SELAMAT DATANG</h1>
+            <p>Sistem Informasi Antrian Pelayanan Publik</p>
+        </header>
+
+        <main class="display-area">
+            <section class="current-queue">
+                <h2>NOMOR ANTRIAN SAAT INI</h2>
+                <div class="queue-box">
+                    <span id="current-number" class="number-lg">A000</span>
+                </div>
+                <div class="loket-info">
+                    <p>SILAKAN MENUJU KE</p>
+                    <span id="current-loket" class="loket-label">LOKET 0</span>
+                </div>
+            </section>
+
+            <section class="next-queue">
+                <h3>ANTRIAN SELANJUTNYA</h3>
+                <ul id="next-list">
+                    <li><span class="next-label">...</span></li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <div class="ticker">
+                <p id="ticker-text">MOHON JAGA JARAK DAN TUNGGU DENGAN NYAMAN. TERIMA KASIH ATAS KUNJUNGAN ANDA.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="control-panel">
+        <input type="text" id="input-number" placeholder="Contoh: A001">
+        <input type="number" id="input-loket" placeholder="Loket (1-3)">
+        <button onclick="callQueue()">Panggil Antrian (Simulasi)</button>
+        <button onclick="resetQueue()">Reset Antrian</button>
+    </div>
+
+    <!-- <script src="script.js"></script> -->
+    <script>
+        // --- DATABASE SIMULASI ---
+        // Antrian awal. Dalam proyek nyata, data ini diambil dari server/database.
+        let queueData = [
+            { number: 'A001', loket: 1, status: 'DONE' },
+            { number: 'B001', loket: 2, status: 'DONE' },
+            { number: 'A002', loket: 1, status: 'CALL' }, // Antrian yang sedang dipanggil
+            { number: 'B002', loket: 3, status: 'WAIT' },
+            { number: 'A003', loket: 1, status: 'WAIT' },
+            { number: 'B003', loket: 2, status: 'WAIT' },
+            { number: 'A004', loket: 1, status: 'WAIT' },
+        ];
+
+        // --- FUNGSI UTAMA DISPLAY ---
+
+        function updateDisplay() {
+            const currentNumberEl = document.getElementById('current-number');
+            const currentLoketEl = document.getElementById('current-loket');
+            const nextListEl = document.getElementById('next-list');
+
+            // 1. Ambil Antrian Yang Sedang Dipanggil (Status: CALL)
+            const currentQueue = queueData.find(q => q.status === 'CALL');
+
+            if (currentQueue) {
+                currentNumberEl.textContent = currentQueue.number;
+                currentLoketEl.textContent = `LOKET ${currentQueue.loket}`;
+            } else {
+                currentNumberEl.textContent = 'A000';
+                currentLoketEl.textContent = 'LOKET 0';
+            }
+
+            // 2. Ambil 5 Antrian Selanjutnya (Status: WAIT)
+            const nextQueues = queueData
+                .filter(q => q.status === 'WAIT')
+                .slice(0, 5); // Ambil hanya 5 antrian berikutnya
+
+            // Perbarui Daftar Antrian Selanjutnya
+            nextListEl.innerHTML = ''; // Kosongkan daftar lama
+
+            if (nextQueues.length > 0) {
+                nextQueues.forEach(q => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                <span class="next-label">No. ${q.number}</span>
+                <span class="next-label">Loket ${q.loket}</span>
+            `;
+                    nextListEl.appendChild(listItem);
+                });
+            } else {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<span class="next-label">Belum ada antrian menunggu.</span>`;
+                nextListEl.appendChild(listItem);
+            }
+        }
+
+        // --- FUNGSI PENGUMUMAN SUARA (TEXT-TO-SPEECH) ---
+
+        function announceQueue(number, loket) {
+            if ('speechSynthesis' in window) {
+                const synthesizer = window.speechSynthesis;
+
+                // Buat teks yang akan diumumkan
+                const announcementText = `Nomor antrian ${number}. Silakan menuju ke loket ${loket}. Nomor antrian ${number}. Loket ${loket}.`;
+
+                const utterance = new SpeechSynthesisUtterance(announcementText);
+
+                // Atur bahasa (Opsional: cari kode bahasa yang paling sesuai dengan TTS Bahasa Indonesia di browser Anda)
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9; // Kecepatan bicara sedikit lambat
+
+                // Lakukan pengumuman
+                synthesizer.speak(utterance);
+
+            } else {
+                console.warn('Browser tidak mendukung Web Speech API.');
+                alert(`Pengumuman: Nomor ${number}, ke Loket ${loket}`);
+            }
+        }
+
+
+        // --- FUNGSI SIMULASI (Pengganti Komunikasi Server) ---
+
+        let lastCalled = { number: '', loket: 0 };
+
+        function callQueue() {
+            const newNumber = document.getElementById('input-number').value.toUpperCase();
+            const newLoket = parseInt(document.getElementById('input-loket').value);
+
+            if (!newNumber || isNaN(newLoket)) {
+                alert('Masukkan Nomor Antrian dan Nomor Loket yang valid.');
+                return;
+            }
+
+            // 1. Set antrian lama yang sedang 'CALL' menjadi 'DONE'
+            const oldCallIndex = queueData.findIndex(q => q.status === 'CALL');
+            if (oldCallIndex !== -1) {
+                queueData[oldCallIndex].status = 'DONE';
+            }
+
+            // 2. Cek apakah nomor sudah ada di antrian (WAIT/DONE)
+            let existingIndex = queueData.findIndex(q => q.number === newNumber);
+
+            if (existingIndex !== -1 && queueData[existingIndex].status === 'WAIT') {
+                // Jika antrian sudah ada dan menunggu, ubah statusnya menjadi CALL
+                queueData[existingIndex].status = 'CALL';
+                queueData[existingIndex].loket = newLoket; // Update Loket jika dipanggil ke loket berbeda
+            } else if (existingIndex !== -1 && queueData[existingIndex].status === 'DONE') {
+                // Jika antrian sudah selesai, buat baru (asumsi antrian datang lagi)
+                queueData.push({ number: newNumber, loket: newLoket, status: 'CALL' });
+            }
+            else {
+                // Jika antrian benar-benar baru, tambahkan ke data
+                queueData.push({ number: newNumber, loket: newLoket, status: 'CALL' });
+            }
+
+            // 3. Panggil fungsi update tampilan
+            updateDisplay();
+
+            // 4. Lakukan pengumuman suara
+            // Cek agar tidak memanggil suara yang sama berturut-turut
+            if (newNumber !== lastCalled.number || newLoket !== lastCalled.loket) {
+                announceQueue(newNumber, newLoket);
+                lastCalled = { number: newNumber, loket: newLoket };
+            }
+
+            // Bersihkan input
+            document.getElementById('input-number').value = '';
+            document.getElementById('input-loket').value = '';
+        }
+
+        function resetQueue() {
+            // Reset semua data antrian untuk simulasi
+            queueData = [];
+            updateDisplay();
+            alert('Semua antrian telah di-reset.');
+        }
+
+        // --- INISIALISASI ---
+        // Panggil fungsi update display pertama kali saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', updateDisplay);
+    </script>
+</body>
+
+</html>
