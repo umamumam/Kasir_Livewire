@@ -4,23 +4,33 @@
             <h4 class="card-title">📊 Laporan Transaksi</h4>
 
             {{-- Filter Bulan & Tahun --}}
+            @php
+            $totalSemua = $laporan->sum('total');
+            @endphp
+
+            <div class="d-flex justify-content-end">
+                <div class="alert alert-primary mt-3 w-30 text-end">
+                    <strong>Total Semua Transaksi:</strong>
+                    Rp {{ number_format($totalSemua, 0, ',', '.') }}
+                </div>
+            </div>
+
             <form method="GET" action="{{ route('laporan.transaksi') }}" class="row g-3 mb-4">
                 <div class="col-md-3">
                     <label for="bulan" class="form-label">Bulan</label>
                     <select name="bulan" id="bulan" class="form-select">
-                        @for($i=1; $i<=12; $i++)
-                            <option value="{{ str_pad($i,2,'0',STR_PAD_LEFT) }}"
-                                {{ $bulan==str_pad($i,2,'0',STR_PAD_LEFT) ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                        @for($i=1; $i<=12; $i++) <option value="{{ str_pad($i,2,'0',STR_PAD_LEFT) }}" {{
+                            $bulan==str_pad($i,2,'0',STR_PAD_LEFT) ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
                             </option>
-                        @endfor
+                            @endfor
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="tahun" class="form-label">Tahun</label>
                     <select name="tahun" id="tahun" class="form-select">
                         @for($t = now()->year; $t >= now()->year - 5; $t--)
-                            <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
+                        <option value="{{ $t }}" {{ $tahun==$t ? 'selected' : '' }}>{{ $t }}</option>
                         @endfor
                     </select>
                 </div>

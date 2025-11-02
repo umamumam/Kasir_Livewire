@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suara ke Teks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #startStopButton {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            min-height: 50px;
+            text-align: left; /* Teks hasil biasanya lebih mudah dibaca jika rata kiri */
+        }
+    </style>
+</head>
+<body>
+    <h1>Suara ke Teks</h1>
+    <button id="startStopButton">Mulai Mendengarkan</button>
+    <div id="result">Ketik tombol "Mulai Mendengarkan" dan mulai berbicara dalam Bahasa Indonesia.</div>
+    <script>
+        const startStopButton = document.getElementById('startStopButton');
+        const resultDiv = document.getElementById('result');
+
+        // Gunakan variabel yang benar: 'SpeechRecognition' (bukan 'SpeechRecongition')
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        // Pastikan API tersedia di browser
+        if (!SpeechRecognition) {
+            resultDiv.innerHTML = 'Maaf, API Pengenalan Suara tidak didukung oleh browser ini. Coba gunakan Chrome.';
+        } else {
+            const recognition = new SpeechRecognition();
+
+            // **PENGATURAN BAHASA INDONESIA**
+            recognition.lang = 'id-ID';
+
+            recognition.interimResults = true; // Menampilkan hasil sementara saat berbicara
+            recognition.continuous = true;    // Terus mendengarkan meskipun ada jeda
+
+            let listening = false;
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                // Looping untuk mendapatkan semua hasil, termasuk hasil sementara (interim)
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                resultDiv.innerHTML = transcript;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Kesalahan Pengenalan Suara:", event);
+                resultDiv.innerHTML = `Terjadi kesalahan: ${event.error}. Coba lagi.`;
+            }
+
+            recognition.onend = () => {
+                listening = false;
+                startStopButton.textContent = 'Mulai Mendengarkan';
+            }
+
+            // Tambahkan event onstart untuk umpan balik yang lebih baik
+            recognition.onstart = () => {
+                resultDiv.innerHTML = '**Mendengarkan...** Silakan berbicara.';
+            }
+
+
+            startStopButton.addEventListener('click', () => {
+                if (listening) {
+                    recognition.stop();
+                    listening = false;
+                    startStopButton.textContent = 'Mulai Mendengarkan';
+                    // Teks akhir setelah berhenti
+                    resultDiv.innerHTML = resultDiv.innerHTML + ' **(Selesai)**';
+                } else {
+                    recognition.start();
+                    listening = true;
+                    startStopButton.textContent = 'Berhenti Mendengarkan';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
