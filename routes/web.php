@@ -30,8 +30,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 Route::get('/counter', Counter::class);
-Route::get('/kategori', KategoriController::class);
-Route::get('/produk', ProdukController::class);
+
+// Kategori Routes
+Route::get('/kategori', KategoriController::class)->name('kategori.index');
+Route::get('/kategori/create', \App\Livewire\CreateKategori::class)->name('kategori.create');
+Route::get('/kategori/{kategori}/edit', \App\Livewire\EditKategori::class)->name('kategori.edit');
+
+// Produk Routes
+Route::get('/produk', ProdukController::class)->name('produk.index');
+Route::get('/produk/create', \App\Livewire\CreateProduk::class)->name('produk.create');
+Route::get('/produk/{produk}/edit', \App\Livewire\EditProduk::class)->name('produk.edit');
 Route::get('/transaksi', TransaksiController::class)->name('transaksi.index');
 Route::get('/transaksi/create', CreateTransaksi::class)->name('transaksi.create');
 Route::get('/transaksi/{transaksi}/edit', EditTransaksi::class)->name('transaksi.edit');
