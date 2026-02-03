@@ -32,6 +32,12 @@ class KategoriController extends Component
     // Properti untuk pagination per page
     public $perPage = 10;
 
+    // Reset pagination saat perPage berubah
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
     // Aturan validasi
     protected $rules = [
         'nama' => 'required|string|min:3|unique:kategoris,nama',
