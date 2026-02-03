@@ -1,4 +1,3 @@
-<x-app-layout>
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -257,7 +256,6 @@
     </div>
 </div>
 @endif
-</x-app-layout>
 
 {{-- Script SweetAlert2 --}}
 <script>
