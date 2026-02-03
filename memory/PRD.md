@@ -6,7 +6,7 @@ User ingin mengubah tampilan halaman transaksi, produk, dan kategori agar menggu
 ## Architecture
 - **Framework**: Laravel 10+ dengan Livewire
 - **Frontend Template**: Modernize Bootstrap 5 Admin Template
-- **Database**: MySQL (assumed)
+- **Database**: MySQL
 - **Authentication**: Laravel Breeze
 
 ## User Personas
@@ -14,7 +14,7 @@ User ingin mengubah tampilan halaman transaksi, produk, dan kategori agar menggu
 
 ## Core Requirements (Static)
 - Halaman Produk dengan CRUD operations
-- Halaman Kategori dengan CRUD operations
+- Halaman Kategori dengan CRUD operations  
 - Halaman Transaksi
 - Dashboard dengan statistik
 - Laporan transaksi
@@ -22,41 +22,44 @@ User ingin mengubah tampilan halaman transaksi, produk, dan kategori agar menggu
 ## What's Been Implemented
 
 ### January 2026
-- ✅ Redesign halaman **Produk** dengan Bootstrap style (dari Tailwind)
-  - Table styling yang lebih rapi dengan Bootstrap classes
-  - Pagination custom dengan style Bootstrap
-  - Per-page selector (Show entries: 5, 10, 25, 50)
-  - Search input dengan icon
-  - Modal form dengan Bootstrap modal
-  - Badge untuk stok (merah: ≤20, kuning: ≤50, hijau: >50)
-  - Badge untuk kategori dengan light-primary style
+- ✅ Redesign halaman **Produk** dengan Bootstrap style
+  - Tabel dengan border (table-bordered) 
+  - Pagination compact dengan "Sebelumnya" dan "Selanjutnya"
+  - Per-page selector (Tampilkan X entri)
+  - Search input dengan label "Cari:"
+  - **Halaman terpisah untuk Create dan Edit** (bukan modal)
   
-- ✅ Redesign halaman **Kategori** dengan Bootstrap style (dari Tailwind)
-  - Table styling konsisten dengan dashboard
-  - Pagination custom dengan style Bootstrap
-  - Per-page selector untuk dynamic pagination
-  - Search input dengan icon
-  - Modal form dengan Bootstrap modal
-  - Icon folder untuk setiap kategori
-  
-- ✅ Update Livewire Controllers
-  - Menambahkan property `$perPage` untuk dynamic pagination
-  - Menambahkan method `updatingPerPage()` untuk reset page
+- ✅ Redesign halaman **Kategori** dengan Bootstrap style
+  - Tabel dengan border konsisten
+  - Pagination compact
+  - **Halaman terpisah untuk Create dan Edit** (bukan modal)
+
+- ✅ Komponen Livewire baru:
+  - CreateProduk.php + create-produk.blade.php
+  - EditProduk.php + edit-produk.blade.php
+  - CreateKategori.php + create-kategori.blade.php
+  - EditKategori.php + edit-kategori.blade.php
+
+- ✅ Routes baru:
+  - /produk/create → CreateProduk
+  - /produk/{produk}/edit → EditProduk
+  - /kategori/create → CreateKategori
+  - /kategori/{kategori}/edit → EditKategori
 
 ## Prioritized Backlog
 
 ### P0 (Critical)
-- ❌ Redesign halaman Transaksi (belum diminta user)
+- (Done) Fix tombol tambah dan edit tidak berfungsi
 
-### P1 (High)
+### P1 (High)  
+- Redesign halaman Transaksi dengan style yang sama
 - Export data ke Excel/PDF
-- Filter berdasarkan tanggal
 
 ### P2 (Nice to have)
 - Dark mode support
 - Real-time notifications
 
 ## Next Tasks
-1. Jika user ingin mengubah halaman Transaksi, gunakan pattern yang sama
-2. Testing di local environment oleh user
-3. Push ke GitHub jika sudah sesuai
+1. Test Create dan Edit produk/kategori di local
+2. Jika ada issue, debug dan perbaiki
+3. Redesign halaman Transaksi jika diminta
