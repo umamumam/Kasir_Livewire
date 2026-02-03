@@ -2,12 +2,20 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+                {{-- Flash Message --}}
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+
                 {{-- Header dengan judul dan tombol tambah --}}
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h5 class="card-title fw-semibold mb-0">Manajemen Kategori</h5>
-                    <button wire:click="create" type="button" class="btn btn-primary">
+                    <a href="{{ route('kategori.create') }}" class="btn btn-primary">
                         <i class="ti ti-plus me-1"></i>Tambah Kategori
-                    </button>
+                    </a>
                 </div>
 
                 {{-- Filter row --}}
@@ -44,11 +52,11 @@
                                 <td>{{ $kategoris->firstItem() + $index }}</td>
                                 <td>{{ $kategori->nama }}</td>
                                 <td class="text-center">
-                                    <button wire:click="edit({{ $kategori->id }})" type="button" class="btn btn-sm btn-link text-warning p-1" title="Edit">
-                                        <i class="ti ti-edit fs-5"></i>
-                                    </button>
-                                    <button onclick="confirmDelete({{ $kategori->id }})" type="button" class="btn btn-sm btn-link text-danger p-1" title="Hapus">
-                                        <i class="ti ti-trash fs-5"></i>
+                                    <a href="{{ route('kategori.edit', $kategori->id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="ti ti-edit"></i>
+                                    </a>
+                                    <button onclick="confirmDelete({{ $kategori->id }})" type="button" class="btn btn-sm btn-danger" title="Hapus">
+                                        <i class="ti ti-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -121,36 +129,6 @@
         </div>
     </div>
 </div>
-
-{{-- Modal untuk Tambah/Edit Kategori --}}
-@if($showModal)
-<div class="modal-backdrop fade show"></div>
-<div class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ $isCreating ? 'Tambah Kategori Baru' : 'Edit Kategori' }}</h5>
-                <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
-            </div>
-            <form wire:submit.prevent="{{ $isCreating ? 'store' : 'update' }}">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-                        <input wire:model="nama" type="text" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori">
-                        @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-device-floppy me-1"></i>Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
 @script
 <script>
