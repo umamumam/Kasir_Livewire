@@ -134,7 +134,7 @@ class KategoriController extends Component
     {
         $kategoris = Kategori::where('nama', 'like', '%' . $this->search . '%')
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         return view('livewire.kategori', compact('kategoris'))->layout('layouts.app');
     }

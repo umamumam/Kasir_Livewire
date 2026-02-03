@@ -184,7 +184,7 @@ class ProdukController extends Component
             }
         }
 
-        $produks = $query->orderBy($this->sortField, $this->sortDirection)->paginate(10);
+        $produks = $query->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage);
         $kategoris = Kategori::all();
 
         return view('livewire.produk', compact('produks', 'kategoris'))->layout('layouts.app');
