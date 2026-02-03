@@ -21,11 +21,17 @@ class TransaksiController extends Component
     public $startDate;
     public $endDate;
     public $filterMode = 'daily';
+    public $perPage = 10;
 
     public $showDetailModal = false;
     public $selectedTransaksi;
 
     public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
     {
         $this->resetPage();
     }
