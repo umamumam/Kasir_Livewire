@@ -2,88 +2,60 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="d-sm-flex d-block align-items-center justify-content-between mb-4">
-                    <div class="mb-3 mb-sm-0">
-                        <h5 class="card-title fw-semibold">
-                            <i class="ti ti-category me-2"></i>Manajemen Kategori
-                        </h5>
-                    </div>
+                {{-- Header dengan judul dan tombol tambah --}}
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="card-title fw-semibold mb-0">Manajemen Kategori</h5>
+                    <button wire:click="create" type="button" class="btn btn-primary">
+                        <i class="ti ti-plus me-1"></i>Tambah Kategori
+                    </button>
                 </div>
 
-                <div class="d-flex flex-wrap gap-3 mb-4 align-items-center justify-content-between">
+                {{-- Filter row --}}
+                <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <label class="form-label mb-0">Show</label>
-                        <select wire:model.live="perPage" class="form-select form-select-sm" style="width: auto;" data-testid="per-page-select">
+                        <span>Tampilkan</span>
+                        <select wire:model.live="perPage" class="form-select form-select-sm" style="width: 70px;">
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
                         </select>
-                        <span class="text-muted">entries</span>
+                        <span>entri</span>
                     </div>
-                    <div class="d-flex gap-2 align-items-center">
-                        <input wire:model.live.debounce.300ms="search" type="text" 
-                            class="form-control" style="width: 200px;" placeholder="Cari kategori..." data-testid="search-input">
-                        <button wire:click="create" class="btn btn-primary d-flex align-items-center gap-2" data-testid="btn-add-category">
-                            <i class="ti ti-plus"></i>
-                            <span>Tambah Kategori</span>
-                        </button>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Cari:</span>
+                        <input wire:model.live.debounce.300ms="search" type="text" class="form-control form-control-sm" style="width: 200px;">
                     </div>
                 </div>
 
+                {{-- Tabel --}}
                 <div class="table-responsive">
-                    <table class="table table-hover text-nowrap mb-0 align-middle" data-testid="categories-table">
-                        <thead class="text-dark fs-4">
+                    <table class="table table-bordered text-nowrap align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th class="border-bottom-0" style="width: 80px;">
-                                    <h6 class="fw-semibold mb-0">No</h6>
-                                </th>
-                                <th class="border-bottom-0">
-                                    <h6 class="fw-semibold mb-0">Nama Kategori</h6>
-                                </th>
-                                <th class="border-bottom-0 text-center" style="width: 150px;">
-                                    <h6 class="fw-semibold mb-0">Aksi</h6>
-                                </th>
+                                <th style="width: 80px;">NO</th>
+                                <th>NAMA KATEGORI</th>
+                                <th class="text-center" style="width: 150px;">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($kategoris as $index => $kategori)
-                            <tr wire:key="{{ $kategori->id }}" data-testid="category-row-{{ $kategori->id }}">
-                                <td class="border-bottom-0">
-                                    <span class="fw-normal">{{ $kategoris->firstItem() + $index }}</span>
-                                </td>
-                                <td class="border-bottom-0">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="round-40 d-flex align-items-center justify-content-center bg-light-primary rounded-circle">
-                                            <i class="ti ti-folder text-primary fs-5"></i>
-                                        </span>
-                                        <h6 class="fw-semibold mb-0">{{ $kategori->nama }}</h6>
-                                    </div>
-                                </td>
-                                <td class="border-bottom-0 text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button wire:click="edit({{ $kategori->id }})"
-                                            class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" 
-                                            style="width: 32px; height: 32px;" 
-                                            title="Edit" data-testid="btn-edit-{{ $kategori->id }}">
-                                            <i class="ti ti-edit fs-5"></i>
-                                        </button>
-                                        <button onclick="confirmDelete({{ $kategori->id }})"
-                                            class="btn btn-sm btn-danger d-flex align-items-center justify-content-center" 
-                                            style="width: 32px; height: 32px;" 
-                                            title="Hapus" data-testid="btn-delete-{{ $kategori->id }}">
-                                            <i class="ti ti-trash fs-5"></i>
-                                        </button>
-                                    </div>
+                            <tr wire:key="{{ $kategori->id }}">
+                                <td>{{ $kategoris->firstItem() + $index }}</td>
+                                <td>{{ $kategori->nama }}</td>
+                                <td class="text-center">
+                                    <button wire:click="edit({{ $kategori->id }})" type="button" class="btn btn-sm btn-link text-warning p-1" title="Edit">
+                                        <i class="ti ti-edit fs-5"></i>
+                                    </button>
+                                    <button onclick="confirmDelete({{ $kategori->id }})" type="button" class="btn btn-sm btn-link text-danger p-1" title="Hapus">
+                                        <i class="ti ti-trash fs-5"></i>
+                                    </button>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="text-center py-4">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <i class="ti ti-folder-off fs-1 text-muted mb-2"></i>
-                                        <p class="text-muted mb-0">Tidak ada data kategori yang ditemukan.</p>
-                                    </div>
+                                <td colspan="3" class="text-center py-4 text-muted">
+                                    Tidak ada data kategori yang ditemukan.
                                 </td>
                             </tr>
                             @endforelse
@@ -91,25 +63,20 @@
                     </table>
                 </div>
 
+                {{-- Pagination --}}
                 @if($kategoris->hasPages())
-                <div class="d-flex flex-wrap align-items-center justify-content-between mt-4 gap-3">
-                    <div class="text-muted fs-3">
-                        Menampilkan {{ $kategoris->firstItem() }} sampai {{ $kategoris->lastItem() }} dari {{ $kategoris->total() }} data
+                <div class="d-flex align-items-center justify-content-between mt-3">
+                    <div class="text-muted">
+                        Menampilkan {{ $kategoris->firstItem() }} sampai {{ $kategoris->lastItem() }} dari {{ $kategoris->total() }} entri
                     </div>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination mb-0" data-testid="pagination">
-                            {{-- Previous --}}
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
                             @if($kategoris->onFirstPage())
-                                <li class="page-item disabled">
-                                    <span class="page-link">Previous</span>
-                                </li>
+                                <li class="page-item disabled"><span class="page-link">Sebelumnya</span></li>
                             @else
-                                <li class="page-item">
-                                    <a wire:click="previousPage" class="page-link" href="javascript:void(0)">Previous</a>
-                                </li>
+                                <li class="page-item"><a wire:click="previousPage" class="page-link" href="javascript:void(0)">Sebelumnya</a></li>
                             @endif
 
-                            {{-- Page Numbers (limited) --}}
                             @php
                                 $currentPage = $kategoris->currentPage();
                                 $lastPage = $kategoris->lastPage();
@@ -118,44 +85,33 @@
                             @endphp
 
                             @if($start > 1)
-                                <li class="page-item">
-                                    <a wire:click="gotoPage(1)" class="page-link" href="javascript:void(0)">1</a>
-                                </li>
+                                <li class="page-item"><a wire:click="gotoPage(1)" class="page-link" href="javascript:void(0)">1</a></li>
                                 @if($start > 2)
                                     <li class="page-item disabled"><span class="page-link">...</span></li>
                                 @endif
                             @endif
 
                             @for($page = $start; $page <= $end; $page++)
-                                @if($page == $currentPage)
-                                    <li class="page-item active">
+                                <li class="page-item {{ $page == $currentPage ? 'active' : '' }}">
+                                    @if($page == $currentPage)
                                         <span class="page-link">{{ $page }}</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
+                                    @else
                                         <a wire:click="gotoPage({{ $page }})" class="page-link" href="javascript:void(0)">{{ $page }}</a>
-                                    </li>
-                                @endif
+                                    @endif
+                                </li>
                             @endfor
 
                             @if($end < $lastPage)
                                 @if($end < $lastPage - 1)
                                     <li class="page-item disabled"><span class="page-link">...</span></li>
                                 @endif
-                                <li class="page-item">
-                                    <a wire:click="gotoPage({{ $lastPage }})" class="page-link" href="javascript:void(0)">{{ $lastPage }}</a>
-                                </li>
+                                <li class="page-item"><a wire:click="gotoPage({{ $lastPage }})" class="page-link" href="javascript:void(0)">{{ $lastPage }}</a></li>
                             @endif
 
-                            {{-- Next --}}
                             @if($kategoris->hasMorePages())
-                                <li class="page-item">
-                                    <a wire:click="nextPage" class="page-link" href="javascript:void(0)">Next</a>
-                                </li>
+                                <li class="page-item"><a wire:click="nextPage" class="page-link" href="javascript:void(0)">Selanjutnya</a></li>
                             @else
-                                <li class="page-item disabled">
-                                    <span class="page-link">Next</span>
-                                </li>
+                                <li class="page-item disabled"><span class="page-link">Selanjutnya</span></li>
                             @endif
                         </ul>
                     </nav>
@@ -169,27 +125,24 @@
 {{-- Modal untuk Tambah/Edit Kategori --}}
 @if($showModal)
 <div class="modal-backdrop fade show"></div>
-<div class="modal fade show" tabindex="-1" style="display: block;" data-testid="category-modal">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-semibold">
-                    <i class="ti ti-{{ $isCreating ? 'plus' : 'edit' }} me-2"></i>
-                    {{ $isCreating ? 'Tambah Kategori Baru' : 'Edit Kategori' }}
-                </h5>
-                <button type="button" wire:click="$set('showModal', false)" class="btn-close" data-testid="btn-close-modal"></button>
+                <h5 class="modal-title">{{ $isCreating ? 'Tambah Kategori Baru' : 'Edit Kategori' }}</h5>
+                <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
             </div>
             <form wire:submit.prevent="{{ $isCreating ? 'store' : 'update' }}">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="nama" class="form-label fw-semibold">Nama Kategori</label>
-                        <input wire:model="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori" data-testid="input-nama">
+                        <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+                        <input wire:model="nama" type="text" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori">
                         @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" wire:click="$set('showModal', false)" class="btn btn-light" data-testid="btn-cancel">Batal</button>
-                    <button type="submit" class="btn btn-primary" data-testid="btn-save">
+                    <button type="button" class="btn btn-secondary" wire:click="$set('showModal', false)">Batal</button>
+                    <button type="submit" class="btn btn-primary">
                         <i class="ti ti-device-floppy me-1"></i>Simpan
                     </button>
                 </div>
@@ -199,33 +152,28 @@
 </div>
 @endif
 
-{{-- Script SweetAlert2 --}}
+@script
 <script>
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('swal:success', (event) => {
-            const { title, text, icon } = event[0];
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: icon,
-            });
-        });
-
-        window.confirmDelete = (kategoriId) => {
-            Swal.fire({
-                title: "Apakah Anda Yakin?",
-                text: "Anda tidak akan bisa mengembalikan ini!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#5D87FF",
-                cancelButtonColor: "#FA896B",
-                confirmButtonText: "Ya, Hapus!",
-                cancelButtonText: "Batal"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.call('delete', kategoriId);
-                }
-            });
-        }
+    $wire.on('swal:success', (event) => {
+        const { title, text, icon } = event[0];
+        Swal.fire({ title, text, icon });
     });
+
+    window.confirmDelete = (kategoriId) => {
+        Swal.fire({
+            title: "Apakah Anda Yakin?",
+            text: "Data tidak dapat dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#5D87FF",
+            cancelButtonColor: "#FA896B",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.call('delete', kategoriId);
+            }
+        });
+    };
 </script>
+@endscript
