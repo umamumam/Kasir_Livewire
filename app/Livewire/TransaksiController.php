@@ -133,7 +133,7 @@ class TransaksiController extends Component
         }
 
         $transaksis = $query->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         return view('livewire.transaksi.transaksi-controller', compact('transaksis'))
             ->layout('layouts.transaksi');
