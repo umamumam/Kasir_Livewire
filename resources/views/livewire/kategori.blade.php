@@ -1,115 +1,190 @@
-<div class="p-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">📂 Manajemen Kategori</h1>
-
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">
-        <input wire:model.live.debounce.300ms="search" type="text" placeholder="🔍 Cari kategori..."
-            class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-1/3 text-sm">
-
-        <button wire:click="create"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 flex items-center space-x-2 transition">
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512">
-                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7
-                0-32 14.3-32 32s14.3 32 32 32H192V432c0
-                17.7 14.3 32 32 32s32-14.3
-                32-32V288H400c17.7 0 32-14.3
-                32-32s-14.3-32-32-32H256V80z" />
-            </svg>
-            <span>Tambah Kategori</span>
-        </button>
-    </div>
-
-    {{-- Tabel Daftar Kategori --}}
-    <div class="bg-white shadow-lg rounded-xl overflow-auto">
-        <table class="min-w-full leading-normal">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">No</th>
-                    <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">Nama Kategori
-                    </th>
-                    <th class="px-5 py-3 border-b text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($kategoris as $index => $kategori)
-                <tr wire:key="{{ $kategori->id }}" class="hover:bg-gray-50 transition">
-                {{-- <tr class="hover:bg-gray-50 transition"> --}}
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">
-                        {{ $kategoris->firstItem() + $index }}
-                    </td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">
-                        {{ $kategori->nama }}
-                    </td>
-                    <td class="px-5 py-4 border-b text-sm text-center">
-                        <div class="flex justify-center gap-2">
-                            {{-- Tombol Edit --}}
-                            <button wire:click="edit({{ $kategori->id }})"
-                                class="px-3 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-edit"></i>
-                                <span>Edit</span>
-                            </button>
-
-                            {{-- Tombol Hapus - panggil fungsi JS --}}
-                            <button onclick="confirmDelete({{ $kategori->id }})"
-                                class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Hapus</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="3" class="px-5 py-6 text-center text-gray-500 text-sm">
-                        Tidak ada data kategori yang ditemukan.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Link Pagination --}}
-    <div class="px-5 py-4 mt-4">
-        {{ $kategoris->links() }}
-    </div>
-
-    {{-- Modal untuk Tambah/Edit Kategori --}}
-    @if($showModal)
-    <div class="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-        <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">
-                {{ $isCreating ? 'Tambah Kategori Baru' : 'Edit Kategori' }}
-            </h3>
-            <form wire:submit.prevent="{{ $isCreating ? 'store' : 'update' }}">
-                <div class="mb-4">
-                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Kategori</label>
-                    <input wire:model.defer="nama" type="text" id="nama"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    @error('nama') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+<x-app-layout>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-sm-flex d-block align-items-center justify-content-between mb-4">
+                    <div class="mb-3 mb-sm-0">
+                        <h5 class="card-title fw-semibold">
+                            <i class="ti ti-category me-2"></i>Manajemen Kategori
+                        </h5>
+                    </div>
                 </div>
-                <div class="flex justify-end gap-2 mt-6">
-                    <button type="button" wire:click="$set('showModal', false)"
-                        class="px-4 py-2 bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-300 transition">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                        Simpan
+
+                <div class="d-flex flex-wrap gap-3 mb-4 align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0">Show</label>
+                        <select wire:model.live="perPage" class="form-select form-select-sm" style="width: auto;" data-testid="per-page-select">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="text-muted">entries</span>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="input-group" style="width: 250px;">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <i class="ti ti-search"></i>
+                            </span>
+                            <input wire:model.live.debounce.300ms="search" type="text" 
+                                class="form-control border-start-0" placeholder="Cari kategori..." data-testid="search-input">
+                        </div>
+                        <button wire:click="create" class="btn btn-primary d-flex align-items-center gap-2" data-testid="btn-add-category">
+                            <i class="ti ti-plus"></i>
+                            <span>Tambah Kategori</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap mb-0 align-middle" data-testid="categories-table">
+                        <thead class="text-dark fs-4">
+                            <tr>
+                                <th class="border-bottom-0" style="width: 80px;">
+                                    <h6 class="fw-semibold mb-0">No</h6>
+                                </th>
+                                <th class="border-bottom-0">
+                                    <h6 class="fw-semibold mb-0">Nama Kategori</h6>
+                                </th>
+                                <th class="border-bottom-0 text-center" style="width: 150px;">
+                                    <h6 class="fw-semibold mb-0">Aksi</h6>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($kategoris as $index => $kategori)
+                            <tr wire:key="{{ $kategori->id }}" data-testid="category-row-{{ $kategori->id }}">
+                                <td class="border-bottom-0">
+                                    <span class="fw-normal">{{ $kategoris->firstItem() + $index }}</span>
+                                </td>
+                                <td class="border-bottom-0">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="round-40 d-flex align-items-center justify-content-center bg-light-primary rounded-circle">
+                                            <i class="ti ti-folder text-primary fs-5"></i>
+                                        </span>
+                                        <h6 class="fw-semibold mb-0">{{ $kategori->nama }}</h6>
+                                    </div>
+                                </td>
+                                <td class="border-bottom-0 text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button wire:click="edit({{ $kategori->id }})"
+                                            class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" 
+                                            style="width: 32px; height: 32px;" 
+                                            title="Edit" data-testid="btn-edit-{{ $kategori->id }}">
+                                            <i class="ti ti-edit fs-5"></i>
+                                        </button>
+                                        <button onclick="confirmDelete({{ $kategori->id }})"
+                                            class="btn btn-sm btn-danger d-flex align-items-center justify-content-center" 
+                                            style="width: 32px; height: 32px;" 
+                                            title="Hapus" data-testid="btn-delete-{{ $kategori->id }}">
+                                            <i class="ti ti-trash fs-5"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="text-center py-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="ti ti-folder-off fs-1 text-muted mb-2"></i>
+                                        <p class="text-muted mb-0">Tidak ada data kategori yang ditemukan.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                @if($kategoris->hasPages())
+                <div class="d-flex flex-wrap align-items-center justify-content-between mt-4 gap-3">
+                    <div class="text-muted fs-3">
+                        Menampilkan {{ $kategoris->firstItem() }} sampai {{ $kategoris->lastItem() }} dari {{ $kategoris->total() }} data
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination mb-0" data-testid="pagination">
+                            {{-- Previous --}}
+                            @if($kategoris->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">Previous</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a wire:click="previousPage" class="page-link" href="javascript:void(0)">Previous</a>
+                                </li>
+                            @endif
+
+                            {{-- Page Numbers --}}
+                            @foreach($kategoris->getUrlRange(1, $kategoris->lastPage()) as $page => $url)
+                                @if($page == $kategoris->currentPage())
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ $page }}</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a wire:click="gotoPage({{ $page }})" class="page-link" href="javascript:void(0)">{{ $page }}</a>
+                                    </li>
+                                @endif
+                            @endforeach
+
+                            {{-- Next --}}
+                            @if($kategoris->hasMorePages())
+                                <li class="page-item">
+                                    <a wire:click="nextPage" class="page-link" href="javascript:void(0)">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">Next</span>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal untuk Tambah/Edit Kategori --}}
+@if($showModal)
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);" data-testid="category-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">
+                    <i class="ti ti-{{ $isCreating ? 'plus' : 'edit' }} me-2"></i>
+                    {{ $isCreating ? 'Tambah Kategori Baru' : 'Edit Kategori' }}
+                </h5>
+                <button type="button" wire:click="$set('showModal', false)" class="btn-close" data-testid="btn-close-modal"></button>
+            </div>
+            <form wire:submit.prevent="{{ $isCreating ? 'store' : 'update' }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nama" class="form-label fw-semibold">Nama Kategori</label>
+                        <input wire:model.defer="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori" data-testid="input-nama">
+                        @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" wire:click="$set('showModal', false)" class="btn btn-light" data-testid="btn-cancel">Batal</button>
+                    <button type="submit" class="btn btn-primary" data-testid="btn-save">
+                        <i class="ti ti-device-floppy me-1"></i>Simpan
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    @endif
 </div>
+@endif
+</x-app-layout>
 
 {{-- Script SweetAlert2 --}}
 <script>
     document.addEventListener('livewire:initialized', () => {
-
-        // Menampilkan notifikasi sukses
         @this.on('swal:success', (event) => {
-            const { title, text, icon } = event[0]; // Perbaikan di sini
+            const { title, text, icon } = event[0];
             Swal.fire({
                 title: title,
                 text: text,
@@ -117,15 +192,14 @@
             });
         });
 
-        // Fungsi untuk konfirmasi hapus
         window.confirmDelete = (kategoriId) => {
             Swal.fire({
                 title: "Apakah Anda Yakin?",
                 text: "Anda tidak akan bisa mengembalikan ini!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
+                confirmButtonColor: "#5D87FF",
+                cancelButtonColor: "#FA896B",
                 confirmButtonText: "Ya, Hapus!",
                 cancelButtonText: "Batal"
             }).then((result) => {
