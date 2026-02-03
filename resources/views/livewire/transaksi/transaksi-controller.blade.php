@@ -1,159 +1,256 @@
-<div class="p-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">📝 Manajemen Transaksi</h1>
-    {{-- Search & Tambah Transaksi --}}
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">
-        <a href="{{ route('transaksi.create') }}"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 flex items-center space-x-2 transition">
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512">
-                <path
-                    d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-            </svg>
-            <span>Tambah Transaksi</span>
-        </a>
-        <input wire:model.live.debounce.300ms="search" type="text" placeholder="🔍 Cari transaksi..."
-            class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-1/3 text-sm">
-        <span class="text-sm font-semibold text-gray-700">Tampilkan:</span>
-        <div class="flex gap-2">
-            <button wire:click="$set('filterMode', 'daily')"
-                class="px-4 py-2 rounded-lg text-sm font-medium transition
-                @if($filterMode === 'daily') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
-                Hari Ini
-            </button>
-            <button wire:click="$set('filterMode', 'all')"
-                class="px-4 py-2 rounded-lg text-sm font-medium transition
-                @if($filterMode === 'all') bg-indigo-600 text-white shadow-md @else bg-gray-200 text-gray-800 hover:bg-gray-300 @endif">
-                Semua
-            </button>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {{-- Header dengan judul dan tombol --}}
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="card-title fw-semibold mb-0">Manajemen Transaksi</h5>
+                    <div class="d-flex gap-2">
+                        <button wire:click="$set('filterMode', 'daily')" type="button"
+                            class="btn {{ $filterMode === 'daily' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            Hari Ini
+                        </button>
+                        <button wire:click="$set('filterMode', 'all')" type="button"
+                            class="btn {{ $filterMode === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+                            Semua
+                        </button>
+                        <a href="{{ route('transaksi.create') }}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>Tambah Transaksi
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Filter row --}}
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Tampilkan</span>
+                        <select wire:model.live="perPage" class="form-select form-select-sm" style="width: 70px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>entri</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Cari:</span>
+                        <input wire:model.live.debounce.300ms="search" type="text" class="form-control form-control-sm" style="width: 200px;">
+                    </div>
+                </div>
+
+                {{-- Tabel --}}
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">NO</th>
+                                <th wire:click="sortBy('kode')" style="cursor: pointer;">
+                                    KODE TRANSAKSI
+                                    @if($sortField === 'kode')
+                                        <i class="ti ti-arrow-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1"></i>
+                                    @endif
+                                </th>
+                                <th wire:click="sortBy('tanggaltransaksi')" style="cursor: pointer;">
+                                    TANGGAL
+                                    @if($sortField === 'tanggaltransaksi')
+                                        <i class="ti ti-arrow-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1"></i>
+                                    @endif
+                                </th>
+                                <th wire:click="sortBy('total')" style="cursor: pointer;">
+                                    TOTAL
+                                    @if($sortField === 'total')
+                                        <i class="ti ti-arrow-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1"></i>
+                                    @endif
+                                </th>
+                                <th>BAYAR</th>
+                                <th>KEMBALIAN</th>
+                                <th class="text-center" style="width: 180px;">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($transaksis as $index => $transaksi)
+                            <tr wire:key="{{ $transaksi->id }}">
+                                <td>{{ $transaksis->firstItem() + $index }}</td>
+                                <td>{{ $transaksi->kode }}</td>
+                                <td>{{ \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d M Y') }}</td>
+                                <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</td>
+                                <td class="text-center">
+                                    <button wire:click="showDetail({{ $transaksi->id }})" type="button" class="btn btn-sm btn-info" title="Detail">
+                                        <i class="ti ti-eye"></i>
+                                    </button>
+                                    <a href="{{ route('transaksi.edit', $transaksi->id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="ti ti-edit"></i>
+                                    </a>
+                                    <a href="{{ route('transaksi.nota', $transaksi->id) }}" target="_blank" class="btn btn-sm btn-success" title="Print">
+                                        <i class="ti ti-printer"></i>
+                                    </a>
+                                    <button onclick="confirmDelete({{ $transaksi->id }})" type="button" class="btn btn-sm btn-danger" title="Hapus">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    Tidak ada data transaksi yang ditemukan.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                @if($transaksis->hasPages())
+                <div class="d-flex align-items-center justify-content-between mt-3">
+                    <div class="text-muted">
+                        Menampilkan {{ $transaksis->firstItem() }} sampai {{ $transaksis->lastItem() }} dari {{ $transaksis->total() }} entri
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            @if($transaksis->onFirstPage())
+                                <li class="page-item disabled"><span class="page-link">Sebelumnya</span></li>
+                            @else
+                                <li class="page-item"><a wire:click="previousPage" class="page-link" href="javascript:void(0)">Sebelumnya</a></li>
+                            @endif
+
+                            @php
+                                $currentPage = $transaksis->currentPage();
+                                $lastPage = $transaksis->lastPage();
+                                $start = max(1, $currentPage - 2);
+                                $end = min($lastPage, $currentPage + 2);
+                            @endphp
+
+                            @if($start > 1)
+                                <li class="page-item"><a wire:click="gotoPage(1)" class="page-link" href="javascript:void(0)">1</a></li>
+                                @if($start > 2)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                            @endif
+
+                            @for($page = $start; $page <= $end; $page++)
+                                <li class="page-item {{ $page == $currentPage ? 'active' : '' }}">
+                                    @if($page == $currentPage)
+                                        <span class="page-link">{{ $page }}</span>
+                                    @else
+                                        <a wire:click="gotoPage({{ $page }})" class="page-link" href="javascript:void(0)">{{ $page }}</a>
+                                    @endif
+                                </li>
+                            @endfor
+
+                            @if($end < $lastPage)
+                                @if($end < $lastPage - 1)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                                <li class="page-item"><a wire:click="gotoPage({{ $lastPage }})" class="page-link" href="javascript:void(0)">{{ $lastPage }}</a></li>
+                            @endif
+
+                            @if($transaksis->hasMorePages())
+                                <li class="page-item"><a wire:click="nextPage" class="page-link" href="javascript:void(0)">Selanjutnya</a></li>
+                            @else
+                                <li class="page-item disabled"><span class="page-link">Selanjutnya</span></li>
+                            @endif
+                        </ul>
+                    </nav>
+                </div>
+                @endif
+            </div>
         </div>
     </div>
-
-    {{-- Tabel Daftar Transaksi --}}
-    <div class="bg-white shadow-lg overflow-auto">
-        <table class="min-w-full leading-normal">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">No</th>
-                    <th wire:click="sortBy('kode')"
-                        class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer">
-                        Kode Transaksi @if($sortField === 'kode') @include('livewire.partials._sort-icon', ['direction'
-                        => $sortDirection]) @endif</th>
-                    <th wire:click="sortBy('tanggaltransaksi')"
-                        class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer">
-                        Tanggal @if($sortField === 'tanggaltransaksi') @include('livewire.partials._sort-icon',
-                        ['direction' => $sortDirection]) @endif</th>
-                    <th wire:click="sortBy('total')"
-                        class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer">
-                        Total @if($sortField === 'total') @include('livewire.partials._sort-icon', ['direction' =>
-                        $sortDirection]) @endif</th>
-                    <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">Bayar</th>
-                    <th class="px-5 py-3 border-b text-left text-xs font-semibold text-gray-600 uppercase">Kembalian
-                    </th>
-                    <th class="px-4 py-3 border-b text-center text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($transaksis as $index => $transaksi)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">{{ $transaksis->firstItem() + $index }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">{{ $transaksi->kode }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">{{
-                        \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d M Y') }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->total, 0, ',',
-                        '.') }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->bayar, 0, ',',
-                        '.') }}</td>
-                    <td class="px-5 py-4 border-b text-sm text-gray-700">Rp {{ number_format($transaksi->kembalian, 0,
-                        ',', '.') }}</td>
-                    <td class="px-4 py-4 border-b text-sm text-center">
-                        <div class="flex justify-center gap-2">
-                            <button wire:click="showDetail({{ $transaksi->id }})"
-                                class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <a href="{{ route('transaksi.edit', $transaksi->id) }}"
-                                class="px-3 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="{{ route('transaksi.nota', $transaksi->id) }}" target="_blank"
-                                class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-print"></i>
-                            </a>
-                            <button onclick="confirmDelete({{ $transaksi->id }})"
-                                class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center gap-1 text-sm shadow-sm transition">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-5 py-6 text-center text-gray-500 text-sm">Tidak ada data transaksi yang
-                        ditemukan.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Link Pagination --}}
-    <div class="px-5 py-4 mt-4">
-        {{ $transaksis->links() }}
-    </div>
-
-    {{-- Modal Detail Transaksi --}}
-    @if($showDetailModal && $selectedTransaksi)
-    <div class="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-        <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">Detail Transaksi {{
-                $selectedTransaksi->kode }}</h3>
-            <div class="mb-4">
-                <p><strong>Tanggal:</strong> {{
-                    \Carbon\Carbon::parse($selectedTransaksi->tanggaltransaksi)->translatedFormat('d F Y H:i:s') }}</p>
-                <p><strong>Total:</strong> Rp {{ number_format($selectedTransaksi->total, 0, ',', '.') }}</p>
-                <p><strong>Bayar:</strong> Rp {{ number_format($selectedTransaksi->bayar, 0, ',', '.') }}</p>
-                <p><strong>Kembalian:</strong> Rp {{ number_format($selectedTransaksi->kembalian, 0, ',', '.') }}</p>
-            </div>
-            <h4 class="font-bold text-gray-700 mb-2">Item Transaksi:</h4>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Produk</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Harga</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Jumlah</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($selectedTransaksi->detailTransaksis as $detail)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $detail->produk->nama }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {{
-                                number_format($detail->harga, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $detail->jumlah }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rp {{
-                                number_format($detail->subtotal, 0, ',', '.') }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex justify-end gap-2 mt-6">
-                <button type="button" wire:click="closeDetailModal"
-                    class="px-4 py-2 bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-300 transition">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-    @endif
-
 </div>
 
-{{-- Script SweetAlert2 --}}
-@include('livewire.partials._sweetalert-script')
+{{-- Modal Detail Transaksi --}}
+@if($showDetailModal && $selectedTransaksi)
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Transaksi {{ $selectedTransaksi->kode }}</h5>
+                <button type="button" class="btn-close" wire:click="closeDetailModal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Tanggal:</strong></p>
+                        <p>{{ \Carbon\Carbon::parse($selectedTransaksi->tanggaltransaksi)->translatedFormat('d F Y H:i:s') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Kode:</strong></p>
+                        <p>{{ $selectedTransaksi->kode }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Total:</strong></p>
+                        <p class="text-primary fw-bold">Rp {{ number_format($selectedTransaksi->total, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Bayar:</strong></p>
+                        <p>Rp {{ number_format($selectedTransaksi->bayar, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Kembalian:</strong></p>
+                        <p>Rp {{ number_format($selectedTransaksi->kembalian, 0, ',', '.') }}</p>
+                    </div>
+                </div>
+
+                <h6 class="fw-semibold mb-3">Item Transaksi:</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>PRODUK</th>
+                                <th>HARGA</th>
+                                <th>JUMLAH</th>
+                                <th>SUBTOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($selectedTransaksi->detailTransaksis as $detail)
+                            <tr>
+                                <td>{{ $detail->produk->nama }}</td>
+                                <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td>{{ $detail->jumlah }}</td>
+                                <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" wire:click="closeDetailModal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@script
+<script>
+    $wire.on('swal:success', (event) => {
+        const { title, text, icon } = event[0];
+        Swal.fire({ title, text, icon });
+    });
+
+    window.confirmDelete = (transaksiId) => {
+        Swal.fire({
+            title: "Apakah Anda Yakin?",
+            text: "Data tidak dapat dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#5D87FF",
+            cancelButtonColor: "#FA896B",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.call('delete', transaksiId);
+            }
+        });
+    };
+</script>
+@endscript
