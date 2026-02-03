@@ -22,13 +22,8 @@
                         <span class="text-muted">entries</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <div class="input-group" style="width: 250px;">
-                            <span class="input-group-text bg-transparent border-end-0">
-                                <i class="ti ti-search"></i>
-                            </span>
-                            <input wire:model.live.debounce.300ms="search" type="text" 
-                                class="form-control border-start-0" placeholder="Cari kategori..." data-testid="search-input">
-                        </div>
+                        <input wire:model.live.debounce.300ms="search" type="text" 
+                            class="form-control" style="width: 200px;" placeholder="Cari kategori..." data-testid="search-input">
                         <button wire:click="create" class="btn btn-primary d-flex align-items-center gap-2" data-testid="btn-add-category">
                             <i class="ti ti-plus"></i>
                             <span>Tambah Kategori</span>
@@ -114,9 +109,25 @@
                                 </li>
                             @endif
 
-                            {{-- Page Numbers --}}
-                            @foreach($kategoris->getUrlRange(1, $kategoris->lastPage()) as $page => $url)
-                                @if($page == $kategoris->currentPage())
+                            {{-- Page Numbers (limited) --}}
+                            @php
+                                $currentPage = $kategoris->currentPage();
+                                $lastPage = $kategoris->lastPage();
+                                $start = max(1, $currentPage - 2);
+                                $end = min($lastPage, $currentPage + 2);
+                            @endphp
+
+                            @if($start > 1)
+                                <li class="page-item">
+                                    <a wire:click="gotoPage(1)" class="page-link" href="javascript:void(0)">1</a>
+                                </li>
+                                @if($start > 2)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                            @endif
+
+                            @for($page = $start; $page <= $end; $page++)
+                                @if($page == $currentPage)
                                     <li class="page-item active">
                                         <span class="page-link">{{ $page }}</span>
                                     </li>
@@ -125,7 +136,16 @@
                                         <a wire:click="gotoPage({{ $page }})" class="page-link" href="javascript:void(0)">{{ $page }}</a>
                                     </li>
                                 @endif
-                            @endforeach
+                            @endfor
+
+                            @if($end < $lastPage)
+                                @if($end < $lastPage - 1)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                                <li class="page-item">
+                                    <a wire:click="gotoPage({{ $lastPage }})" class="page-link" href="javascript:void(0)">{{ $lastPage }}</a>
+                                </li>
+                            @endif
 
                             {{-- Next --}}
                             @if($kategoris->hasMorePages())
@@ -148,7 +168,8 @@
 
 {{-- Modal untuk Tambah/Edit Kategori --}}
 @if($showModal)
-<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);" data-testid="category-modal">
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show" tabindex="-1" style="display: block;" data-testid="category-modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -162,7 +183,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="nama" class="form-label fw-semibold">Nama Kategori</label>
-                        <input wire:model.defer="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori" data-testid="input-nama">
+                        <input wire:model="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" placeholder="Masukkan nama kategori" data-testid="input-nama">
                         @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>

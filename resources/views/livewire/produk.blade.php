@@ -33,13 +33,8 @@
                         <span class="text-muted">entries</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <div class="input-group" style="width: 250px;">
-                            <span class="input-group-text bg-transparent border-end-0">
-                                <i class="ti ti-search"></i>
-                            </span>
-                            <input wire:model.live.debounce.300ms="search" type="text" 
-                                class="form-control border-start-0" placeholder="Cari produk..." data-testid="search-input">
-                        </div>
+                        <input wire:model.live.debounce.300ms="search" type="text" 
+                            class="form-control" style="width: 200px;" placeholder="Cari produk..." data-testid="search-input">
                         <button wire:click="create" class="btn btn-primary d-flex align-items-center gap-2" data-testid="btn-add-product">
                             <i class="ti ti-plus"></i>
                             <span>Tambah Produk</span>
@@ -55,7 +50,7 @@
                                 <th class="border-bottom-0" style="width: 60px;">
                                     <h6 class="fw-semibold mb-0">No</h6>
                                 </th>
-                                <th wire:click="sortBy('nama')" class="border-bottom-0 cursor-pointer" style="cursor: pointer;" data-testid="sort-nama">
+                                <th wire:click="sortBy('nama')" class="border-bottom-0" style="cursor: pointer;" data-testid="sort-nama">
                                     <h6 class="fw-semibold mb-0 d-flex align-items-center gap-1">
                                         Nama Produk
                                         @if ($sortField === 'nama')
@@ -66,7 +61,7 @@
                                 <th class="border-bottom-0">
                                     <h6 class="fw-semibold mb-0">Harga</h6>
                                 </th>
-                                <th wire:click="sortBy('stok')" class="border-bottom-0 cursor-pointer" style="cursor: pointer;" data-testid="sort-stok">
+                                <th wire:click="sortBy('stok')" class="border-bottom-0" style="cursor: pointer;" data-testid="sort-stok">
                                     <h6 class="fw-semibold mb-0 d-flex align-items-center gap-1">
                                         Stok
                                         @if ($sortField === 'stok')
@@ -155,9 +150,25 @@
                                 </li>
                             @endif
 
-                            {{-- Page Numbers --}}
-                            @foreach($produks->getUrlRange(1, $produks->lastPage()) as $page => $url)
-                                @if($page == $produks->currentPage())
+                            {{-- Page Numbers (limited) --}}
+                            @php
+                                $currentPage = $produks->currentPage();
+                                $lastPage = $produks->lastPage();
+                                $start = max(1, $currentPage - 2);
+                                $end = min($lastPage, $currentPage + 2);
+                            @endphp
+
+                            @if($start > 1)
+                                <li class="page-item">
+                                    <a wire:click="gotoPage(1)" class="page-link" href="javascript:void(0)">1</a>
+                                </li>
+                                @if($start > 2)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                            @endif
+
+                            @for($page = $start; $page <= $end; $page++)
+                                @if($page == $currentPage)
                                     <li class="page-item active">
                                         <span class="page-link">{{ $page }}</span>
                                     </li>
@@ -166,7 +177,16 @@
                                         <a wire:click="gotoPage({{ $page }})" class="page-link" href="javascript:void(0)">{{ $page }}</a>
                                     </li>
                                 @endif
-                            @endforeach
+                            @endfor
+
+                            @if($end < $lastPage)
+                                @if($end < $lastPage - 1)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                                <li class="page-item">
+                                    <a wire:click="gotoPage({{ $lastPage }})" class="page-link" href="javascript:void(0)">{{ $lastPage }}</a>
+                                </li>
+                            @endif
 
                             {{-- Next --}}
                             @if($produks->hasMorePages())
@@ -189,7 +209,8 @@
 
 {{-- Modal untuk Tambah/Edit Produk --}}
 @if($showModal)
-<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);" data-testid="product-modal">
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show" tabindex="-1" style="display: block;" data-testid="product-modal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -204,19 +225,19 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nama" class="form-label fw-semibold">Nama Produk</label>
-                            <input wire:model.defer="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" data-testid="input-nama">
+                            <input wire:model="nama" type="text" id="nama" class="form-control @error('nama') is-invalid @enderror" data-testid="input-nama">
                             @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="kode" class="form-label fw-semibold">Kode Produk</label>
-                            <input wire:model.defer="kode" type="text" id="kode" class="form-control @error('kode') is-invalid @enderror" data-testid="input-kode">
+                            <input wire:model="kode" type="text" id="kode" class="form-control @error('kode') is-invalid @enderror" data-testid="input-kode">
                             @error('kode') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="harga_beli" class="form-label fw-semibold">Harga Beli</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input wire:model.defer="harga_beli" type="number" id="harga_beli" class="form-control @error('harga_beli') is-invalid @enderror" data-testid="input-harga-beli">
+                                <input wire:model="harga_beli" type="number" id="harga_beli" class="form-control @error('harga_beli') is-invalid @enderror" data-testid="input-harga-beli">
                             </div>
                             @error('harga_beli') <div class="text-danger fs-2 mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -224,18 +245,18 @@
                             <label for="harga_jual" class="form-label fw-semibold">Harga Jual</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input wire:model.defer="harga_jual" type="number" id="harga_jual" class="form-control @error('harga_jual') is-invalid @enderror" data-testid="input-harga-jual">
+                                <input wire:model="harga_jual" type="number" id="harga_jual" class="form-control @error('harga_jual') is-invalid @enderror" data-testid="input-harga-jual">
                             </div>
                             @error('harga_jual') <div class="text-danger fs-2 mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="stok" class="form-label fw-semibold">Stok</label>
-                            <input wire:model.defer="stok" type="number" id="stok" class="form-control @error('stok') is-invalid @enderror" data-testid="input-stok">
+                            <input wire:model="stok" type="number" id="stok" class="form-control @error('stok') is-invalid @enderror" data-testid="input-stok">
                             @error('stok') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="kategori_id" class="form-label fw-semibold">Kategori</label>
-                            <select wire:model.defer="kategori_id" id="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" data-testid="select-kategori">
+                            <select wire:model="kategori_id" id="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror" data-testid="select-kategori">
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach($kategoris as $kategori)
                                 <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
