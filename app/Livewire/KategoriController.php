@@ -29,6 +29,9 @@ class KategoriController extends Component
     public $sortField = 'id';
     public $sortDirection = 'desc';
 
+    // Properti untuk pagination per page
+    public $perPage = 10;
+
     // Aturan validasi
     protected $rules = [
         'nama' => 'required|string|min:3|unique:kategoris,nama',

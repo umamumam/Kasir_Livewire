@@ -38,6 +38,9 @@ class ProdukController extends Component
     public $sortField = 'id';
     public $sortDirection = 'desc';
 
+    // Properti untuk pagination per page
+    public $perPage = 10;
+
     // Aturan validasi
     protected function rules()
     {
