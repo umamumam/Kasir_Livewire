@@ -66,7 +66,7 @@
             </form>
 
             <div class="mt-8 text-center border-t border-gray-100 pt-6">
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">© 2026 testingku.my.id</p>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">© 2026 tokolm.my.id</p>
             </div>
         </div>
     </div>
