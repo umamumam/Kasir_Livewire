@@ -10,14 +10,14 @@
         <div class="mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Tambah Produk Baru</h2>
             <div class="relative">
-                <input type="text" wire:model.live.debounce.300ms="searchProduk"
+                <input type="text" id="searchProdukInput" wire:model.live.debounce.300ms="searchProduk"
                     placeholder="Cari produk berdasarkan nama atau kode..."
                     class="form-input w-full rounded-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition duration-150 ease-in-out">
                 @if($showProdukList)
                 <ul
                     class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-2 shadow-xl max-h-60 overflow-y-auto">
                     @forelse($searchResults as $produk)
-                    <li wire:click="addProdukToCart({{ $produk->id }})"
+                    <li wire:click="addProdukToCart({{ $produk->id }})" onclick="document.getElementById('searchProdukInput').value='';"
                         class="p-4 cursor-pointer hover:bg-gray-100 transition duration-150 ease-in-out border-b border-gray-200 last:border-b-0">
                         <p class="font-medium text-gray-900">{{ $produk->nama }} <span class="text-xs text-gray-500">({{
                                 $produk->kode }})</span></p>
