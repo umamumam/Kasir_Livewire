@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nota Transaksi #{{ $transaksi->kode }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <style>
         @page {
             margin: 0;
@@ -15,7 +16,7 @@
         body {
             font-family: 'Plus Jakarta Sans', DejaVu Sans, sans-serif;
             font-size: 14px;
-            line-height: 1.1;
+            line-height: 1;
             padding: 20px;
             width: 200px;
             /* Ukuran kertas nota */
