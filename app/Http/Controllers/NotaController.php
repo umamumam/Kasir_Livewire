@@ -15,7 +15,7 @@ class NotaController extends Controller
 
             if ($transaksi) {
                 $safeKode = str_replace(['/', '\\'], '-', $transaksi->kode);
-                $pdf = Pdf::loadView('livewire.transaksi.nota', compact('transaksi'));
+                $pdf = Pdf::loadView('livewire.transaksi.nota', compact('transaksi'))->setOptions(['isRemoteEnabled' => true]);
                 return $pdf->stream('nota-' . $safeKode . '.pdf');
             } else {
                 abort(404, 'Transaksi tidak ditemukan.');
