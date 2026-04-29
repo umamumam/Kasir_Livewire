@@ -22,7 +22,7 @@
             font-family: 'Plus Jakarta Sans', DejaVu Sans, sans-serif;
             font-size: 12px;
             line-height: 1;
-            padding: 15px;
+            padding: 20px;
             width: 200px;
             /* Ukuran kertas nota */
         }
