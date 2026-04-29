@@ -20,9 +20,9 @@
 
         body {
             font-family: 'Plus Jakarta Sans', DejaVu Sans, sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             line-height: 1;
-            padding: 20px;
+            padding: 15px;
             width: 200px;
             /* Ukuran kertas nota */
         }
