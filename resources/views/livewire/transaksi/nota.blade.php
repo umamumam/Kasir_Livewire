@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
         rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Plus Jakarta Sans';
+            src: url('{{ public_path("fonts/PlusJakartaSans-Regular.ttf") }}') format('truetype');
+        }
+
         @page {
             margin: 0;
         }
