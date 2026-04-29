@@ -20,7 +20,7 @@
 
         body {
             font-family: 'Plus Jakarta Sans', DejaVu Sans, sans-serif;
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1;
             padding: 20px;
             width: 200px;
