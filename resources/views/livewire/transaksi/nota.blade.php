@@ -49,7 +49,7 @@
         .details td:last-child,
         .details th:last-child {
             text-align: right;
-            padding-right: 15px;
+            padding-right: 30px;
             white-space: nowrap;
             vertical-align: bottom;
         }
