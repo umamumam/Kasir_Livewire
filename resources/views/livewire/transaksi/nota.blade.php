@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 
 <head>
@@ -19,17 +18,15 @@
         body {
             font-family: 'Plus Jakarta Sans', DejaVu Sans, sans-serif;
             font-size: 13px;
-            line-height: 1;
+            line-height: 1.2;
             padding: 20px;
             width: 200px;
-            /* Ukuran kertas nota */
         }
 
         .header,
         .footer {
             text-align: center;
             margin-bottom: 5px;
-            line-height: 1;
         }
 
         .details,
@@ -40,18 +37,22 @@
         }
 
         .details td,
-        .details th,
-        .summary td,
-        .summary th {
-            padding: 2px 0;
+        .details th {
+            padding: 1px 0;
         }
 
-        .details td:last-child,
-        .details th:last-child {
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
             text-align: right;
-            padding-right: 30px;
             white-space: nowrap;
-            vertical-align: bottom;
+        }
+
+        .separator {
+            border-bottom: 1px dashed #000;
+            margin: 5px 0;
         }
 
         .summary td:last-child,
@@ -59,74 +60,57 @@
             text-align: right;
             padding-right: 10px;
             white-space: nowrap;
-            vertical-align: top;
         }
 
-        .total td {
+        .total-row {
             font-weight: bold;
         }
-
-        .separator {
-            border-bottom: 1px dashed #000000;
-            margin: 5px 0;
-        }
-
-        .item-list {
-            margin-bottom: 5px;
-        }
-
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .item-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .item-details {
-            white-space: nowrap;
-        }
     </style>
-
 </head>
 
 <body>
     <div class="header">
-        <h3>Agen Sosis <br> Lancar Manunggal</h3>
-        <p>Jl. Raya Tayu-Jepara Km 7 <br> depan Kantor Pos Ngablak</p>
-        <p>HP: 085201454015</p>
+        <h3 style="margin-bottom: 5px;">Agen Sosis <br> Lancar Manunggal</h3>
+        <p style="margin: 0;">Jl. Raya Tayu-Jepara Km 7 <br> depan Kantor Pos Ngablak</p>
+        <p style="margin: 0;">HP: 085201454015</p>
     </div>
+
     <div class="separator"></div>
+
     <table class="details">
         <tr>
-            <td>No Transaksi</td>
-            <td>: {{ $transaksi->kode }}</td>
+            <td class="text-left">No Transaksi</td>
+            <td class="text-left">: {{ $transaksi->kode }}</td>
         </tr>
         <tr>
-            <td>Tanggal</td>
-            <td>: {{ \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d M Y') }}</td>
+            <td class="text-left">Tanggal</td>
+            <td class="text-left">: {{ \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->translatedFormat('d M Y') }}
+            </td>
         </tr>
     </table>
+
     <div class="separator"></div>
+
     <table class="details">
         <thead>
             <tr>
-                <th style="text-align:left;">Produk</th>
-                <th>Subtotal</th>
+                <th class="text-left">Produk</th>
+                <th class="text-left">Subtotal</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($transaksi->detailTransaksis as $detail)
             <tr>
-                <td>
-                    {{ $detail->produk->nama }}<br>
-                    {{ number_format($detail->harga, 0, ',', '.') }} x {{ $detail->jumlah }}
+                <td class="text-left" style="vertical-align: top;">
+                    {{ $detail->produk->nama }}
                 </td>
-                <td>
+                <td rowspan="2" class="text-right" style="vertical-align: bottom; padding-right: 50px;">
                     {{ number_format($detail->subtotal, 0, ',', '.') }}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-left" style="font-size: 12px; padding-bottom: 5px;">
+                    {{ number_format($detail->harga, 0, ',', '.') }} x {{ $detail->jumlah }}
                 </td>
             </tr>
             @endforeach
@@ -134,24 +118,27 @@
     </table>
 
     <div class="separator"></div>
+
     <table class="summary">
         <tr>
-            <td>Total</td>
-            <th>: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</th>
+            <td class="text-left">Total</td>
+            <th class="text-right">: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</th>
         </tr>
         <tr>
-            <td>Bayar</td>
-            <th>: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</th>
+            <td class="text-left">Bayar</td>
+            <th class="text-right">: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</th>
         </tr>
         <tr>
-            <td>Kembalian</td>
-            <th>: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</th>
+            <td class="text-left">Kembalian</td>
+            <th class="text-right">: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</th>
         </tr>
     </table>
+
     <div class="separator"></div>
+
     <div class="footer">
         <p>Terima kasih telah berbelanja! <br>
-            Barang yang sudah dibeli
+            Barang yang sudah dibeli <br>
             tidak dapat dikembalikan.</p>
     </div>
 </body>
