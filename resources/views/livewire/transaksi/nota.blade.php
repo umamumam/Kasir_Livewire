@@ -95,7 +95,7 @@
         <thead>
             <tr>
                 <th class="text-left">Produk</th>
-                <th class="text-left">Subtotal</th>
+                <th class="text-right">Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -104,7 +104,7 @@
                 <td class="text-left" style="vertical-align: top;">
                     {{ $detail->produk->nama }}
                 </td>
-                <td rowspan="2" class="text-right" style="vertical-align: bottom; padding-right: 50px;">
+                <td rowspan="2" class="text-right" style="vertical-align: bottom;">
                     {{ number_format($detail->subtotal, 0, ',', '.') }}
                 </td>
             </tr>
