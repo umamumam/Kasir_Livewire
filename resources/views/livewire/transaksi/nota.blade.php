@@ -40,13 +40,18 @@
         }
 
         .details td,
-        .summary td {
+        .details th,
+        .summary td,
+        .summary th {
             padding: 2px 0;
         }
 
         .details td:last-child,
-        .summary td:last-child {
+        .details th:last-child,
+        .summary td:last-child,
+        .summary th:last-child {
             text-align: right;
+            padding-right: 10px;
         }
 
         .total td {
@@ -98,11 +103,11 @@
         </tr>
     </table>
     <div class="separator"></div>
-    <table class="details" style="width: 100%; border-collapse: collapse;">
+    <table class="details">
         <thead>
             <tr>
                 <th style="text-align:left;">Produk</th>
-                <th style="text-align:right;">Subtotal</th>
+                <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -112,7 +117,7 @@
                     {{ $detail->produk->nama }}<br>
                     {{ number_format($detail->harga, 0, ',', '.') }} x {{ $detail->jumlah }}
                 </td>
-                <td style="text-align:right;">
+                <td>
                     {{ number_format($detail->subtotal, 0, ',', '.') }}
                 </td>
             </tr>
@@ -124,15 +129,15 @@
     <table class="summary">
         <tr>
             <td>Total</td>
-            <th style="text-align:right;">: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</th>
+            <th>: Rp {{ number_format($transaksi->total, 0, ',', '.') }}</th>
         </tr>
         <tr>
             <td>Bayar</td>
-            <th style="text-align:right;">: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</th>
+            <th>: Rp {{ number_format($transaksi->bayar, 0, ',', '.') }}</th>
         </tr>
         <tr>
             <td>Kembalian</td>
-            <th style="text-align:right;">: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</th>
+            <th>: Rp {{ number_format($transaksi->kembalian, 0, ',', '.') }}</th>
         </tr>
     </table>
     <div class="separator"></div>
