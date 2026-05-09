@@ -51,7 +51,9 @@
         .summary td:last-child,
         .summary th:last-child {
             text-align: right;
-            padding-right: 10px;
+            padding-right: 30px;
+            white-space: nowrap;
+            vertical-align: top;
         }
 
         .total td {
@@ -118,7 +120,7 @@
                     {{ number_format($detail->harga, 0, ',', '.') }} x {{ $detail->jumlah }}
                 </td>
                 <td>
-                    {{ number_format($detail->subtotal, 0, ',', '.') }}
+                    : Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
                 </td>
             </tr>
             @endforeach
