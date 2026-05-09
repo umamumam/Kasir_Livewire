@@ -51,7 +51,7 @@
         .summary td:last-child,
         .summary th:last-child {
             text-align: right;
-            padding-right: 30px;
+            padding-right: 10px;
             white-space: nowrap;
             vertical-align: top;
         }
